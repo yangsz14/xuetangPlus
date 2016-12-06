@@ -56,6 +56,8 @@ def validate_user(request,studentid,password):
 
 
 def login(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect("/")
     if request.method == 'POST':
         studentidin = request.POST['studentid']
         passwordin = request.POST['password']
@@ -115,5 +117,44 @@ class CoursePostDetailView(ListView):
         context['user'] = myuser
         context['childrenposts'] = childrenposts
         return context
+
+# class UserDetailView(DetailView):
+#
+#     model = BBSUser
+#     template_name = 'web/user_self_info.html'
+#
+#     def get_context_data(self,**kwargs):
+#         context = super(UserDetailView, self).get_context_data(**kwargs)
+#         if not self.request.user.is_authenticated():
+#             return HttpResponseRedirect('/login/')
+#         userme = BBSUser.objects.get(user=self.request.user)
+#         context['user'] = userme
+#         return context
+
+def user_self_info(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    userme = BBSUser.objects.get(user=request.user)
+    return render(request,'web/user_self_info.html',{'user':userme})
+
+@csrf_exempt
+def like_post_deal(request):
+    print('INTO!!')
+    userme = BBSUser.objects.get(user=request.user)
+    post = BBSPost.objects.get(id=int(request.POST['postID']))
+
+    if UserLikePost.objects.filter(UserID=userme.id, PostID=post).exists():
+        UserLikePost.objects.get(UserID=userme.id, PostID=post).delete()
+        post.P_LikeNum -= 1
+        post.save()
+    else:
+        newLikePost = UserLikePost()
+        newLikePost.UserID = userme
+        newLikePost.PostID = post
+        newLikePost.save()
+        post.P_LikeNum += 1
+        post.save()
+    return HttpResponse('follow success')
+
 
 
