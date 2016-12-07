@@ -27,7 +27,7 @@ class BBSUser(models.Model):
 
 class BBSCourse(models.Model):
     C_Name = models.CharField(max_length=100)
-    C_SeqNum = models.CharField(blank=True,max_length=10)
+    C_SeqNum = models.CharField(blank=True,max_length=50)
 
     def __str__(self):
         return self.C_Name
