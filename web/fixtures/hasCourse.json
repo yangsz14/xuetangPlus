@@ -1,0 +1,8 @@
+[{
+  "model": "web.UserHasCourse",
+  "pk": 1,
+  "fields": {
+    "UserID": 1,
+    "CourseID": 1
+  }
+}]
