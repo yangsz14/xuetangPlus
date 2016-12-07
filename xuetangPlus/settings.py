@@ -124,6 +124,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
+
 STATICFILES_DIRS = [
     'static/',
 ]
