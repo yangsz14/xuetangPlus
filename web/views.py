@@ -18,6 +18,7 @@ from django.contrib import auth
 from .models import *
 from django.views.generic.detail import *
 from django.views.generic.list import *
+from django.urls import reverse
 
 # Create your views here.
 
@@ -112,6 +113,7 @@ class CoursePostDetailView(ListView):
         postid = int(self.kwargs.get(self.pk_postid_kwarg, None))
         bigpost = BBSPost.objects.get(id=postid,P_Course=thiscourse)
         childrenposts = BBSPost.objects.filter(P_Parent=bigpost)
+
         context['bigpost'] = bigpost
         context['course'] = thiscourse
         context['user'] = myuser
@@ -139,14 +141,15 @@ def user_self_info(request):
 
 @csrf_exempt
 def like_post_deal(request):
-    print('INTO!!')
     userme = BBSUser.objects.get(user=request.user)
     post = BBSPost.objects.get(id=int(request.POST['postID']))
-
+    postuser = BBSUser.objects.get(id=post.P_User.id)
     if UserLikePost.objects.filter(UserID=userme.id, PostID=post).exists():
         UserLikePost.objects.get(UserID=userme.id, PostID=post).delete()
         post.P_LikeNum -= 1
         post.save()
+        postuser.U_GPB -= 10#暂时立即数
+        postuser.save()
     else:
         newLikePost = UserLikePost()
         newLikePost.UserID = userme
@@ -154,7 +157,40 @@ def like_post_deal(request):
         newLikePost.save()
         post.P_LikeNum += 1
         post.save()
+        postuser.U_GPB += 10  # 暂时立即数
+        postuser.save()
+
     return HttpResponse('follow success')
+
+def post_course_post(request,courseid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    course = BBSCourse.objects.get(id=courseid)
+    if request.method == 'POST':
+        title = request.POST['P_Title'] if request.POST['P_Title'] else ""
+        content = request.POST['P_Content'] if request.POST['P_Content'] else ""
+        type = request.POST['P_Type'] if request.POST['P_Type'] else 0
+
+        if not title:
+            return render(request,'web/post_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content,'P_Type':type,'course':course})
+        if not content:
+            return render(request,'web/post_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content,'P_Type':type,'course':course})
+        if not type:
+            return render(request,'web/post_post.html',{'error':'请选择帖子类别','P_Title': title,'P_Content': content,'P_Type': type,'course':course})
+
+        userme = BBSUser.objects.get(user=request.user)
+
+        post = BBSPost()
+        post.P_User = userme
+        post.P_Title = title
+        post.P_Content = content
+        post.P_Course = course
+        post.P_Type = type
+        post.save()
+        userme.U_GPB += 100#暂时立即数
+        userme.save()
+        return HttpResponseRedirect(reverse('course',args=[courseid]))
+    return render(request, 'web/post_post.html', {'course':course})
 
 
 
