@@ -20,8 +20,6 @@ from django.views.generic.detail import *
 from django.views.generic.list import *
 from django.urls import reverse
 from .forms import *
-from .urls import *
-import requests
 
 # Create your views here.
 
@@ -48,33 +46,16 @@ def bbs_list(request):
     posts = bestposts[1:10]
     return render(request, 'index.html',{'posts':posts})
 
-def update_course_info(studentid):
-    response = requests.post('http://se.zhuangty.com:8000/curriculum/'+studentid, data={"apikey": "API Key", "apisecret": "API Secret Key"})
-    if response.json()['message'] == 'Success':
-        classes = response.json()['classes']
-        for eachClass in classes:
-            courseid = eachClass['courseid']
-            coursename = eachClass['coursename']
-
-            searchCourse = BBSCourse.objects.filter(C_SeqNum=courseid)
-            if len(searchCourse) == 0:
-                newCourse = BBSCourse()
-                newCourse.C_Name = coursename
-                newCourse.C_SeqNum = courseid
-                newCourse.save()
-            UserID = BBSUser.objects.get(U_studentid=studentid)
-            CourseID = BBSCourse.objects.get(C_SeqNum=courseid)
-            searchCourse = UserHasCourse.objects.filter(UserID=UserID, CourseID=CourseID)
-            if len(searchCourse) == 0:
-                newUserHasCourse = UserHasCourse()
-                newUserHasCourse.UserID = UserID
-                newUserHasCourse.CourseID = CourseID
-                newUserHasCourse.save()
 
 def validate_user(request,studentid,password):
-    response = requests.post('http://se.zhuangty.com:8000/users/register', data={"apikey": "API Key", "apisecret": "API Secret Key", "username": studentid, "password": password})
-    if response.json()['message'] == 'Success':
-        users = BBSUser.objects.filter(U_studentid=studentid)
+    test_data = {'i_user': studentid, 'i_pass': password}
+    test_data_urlencode = urllib.parse.urlencode(test_data).encode("utf-8")
+    requrl = "https://id.tsinghua.edu.cn/do/off/ui/auth/login/post/fa8077873a7a80b1cd6b185d5a796617/0?/j_spring_security_thauth_roaming_entry"
+    req = urllib.request.Request(url=requrl, data=test_data_urlencode)
+
+    f = urllib.request.urlopen(req).read().decode('utf8')
+    if len(f) >= 2000:
+        users = BBSUser.objects.filter(U_studentid = studentid)
         if len(users) == 0:
             newUserSys = User.objects.create_user(username=studentid, password=password)
             newUserSys.save()
@@ -83,15 +64,12 @@ def validate_user(request,studentid,password):
             newUser.U_studentid = studentid
             newUser.U_password = password
             newUser.user = newUserSys
-            newUser.U_RealName = response.json()['information']['realname']
-            newUser.U_Major = response.json()['information']['department']
             newUser.save()
+
             # 这块需要调用接口找到网络学堂的该学生的所有课程然后加到数据库里
-            auth.login(request, newUserSys)
-            update_course_info(studentid)
+            # 这块需要搞来学生的名字，专业等真实信息
             return newUser
         else:
-            update_course_info(studentid)
             newUserSys = auth.authenticate(username=studentid, password=password)
             auth.login(request, newUserSys)
             return users[0]
@@ -100,7 +78,6 @@ def validate_user(request,studentid,password):
 
 
 def login(request):
-    # 这里有一个关于学号和id的小bug
     if request.user.is_authenticated():
         return HttpResponseRedirect("/")
     if request.method == 'POST':
