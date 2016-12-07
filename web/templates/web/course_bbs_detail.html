@@ -13,7 +13,12 @@
         <div>称号：此处要改成文字 如"邯郸学步"{{ bigpost.P_User.U_name}}</div>
         <div>类别：此处要改成文字 如"提问，回答，采纳，笔记等"{{ bigpost.P_Type}}</div>
         <div>点赞数：此处要有{{ bigpost.P_LikeNum}}</div>
-        <input id="{{ bigpost.id }}" type="button" class="likeBtn blue mybutton" value="点赞" onclick="javascript:likebtn(this)">
+
+        {% if islike %}
+            <input id="{{ bigpost.id }}" type="button" class="likeBtn blue mybutton" value="取消" onclick="javascript:likebtn(this)">
+        {% else %}
+            <input id="{{ bigpost.id }}" type="button" class="likeBtn blue mybutton" value="点赞" onclick="javascript:likebtn(this)">
+        {% endif %}
     </li>
     <div>分块 下面是楼下</div>
 <ul>
@@ -26,11 +31,19 @@
         <div>称号：此处要改成文字 如"邯郸学步"{{ post.P_User.U_name}}</div>
         <div>类别：此处要改成文字 如"提问，回答，采纳，笔记等"{{ post.P_Type}}</div>
         <div>点赞数：此处要有{{ post.P_LikeNum}}</div>
-        <input id="{{ post.id }}" type="button" class="likeBtn blue mybutton" value="点赞" onclick="javascript:likebtn(this)">
     </li>
 {% empty %}
     <li>目前还没有回帖，快来抢个沙发吧</li>
 {% endfor %}
+
+        <div style="text-align:left;font-size:20px;font-family:STKaiti;padding-top:15%" id="form_div_of_register">
+            <form method="post" action=".">
+              {% csrf_token %}
+              {{ form.as_p }}
+
+              <input type="submit" value="提交" />
+            </form>
+        </div>
 
     <script type="text/javascript">
     function likebtn(obj) {
