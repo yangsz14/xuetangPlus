@@ -1,0 +1,8 @@
+[{
+  "model": "web.UserLikePost",
+  "pk": 1,
+  "fields": {
+    "UserID": 1,
+    "PostID": 1
+  }
+}]
