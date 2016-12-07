@@ -3,10 +3,11 @@
 {% block title %}-登录{% endblock %}
 {% block content %}
 
-    <h1>{{ user.U_name }}（这块要改成汉字昵称）您的信息</h1>
+    <h1>{{ user.U_RealName }}您的信息</h1>
     <li>
         <div>头像：{{ user.U_Image}}</div>
         <div>昵称：{{ user.U_name}}</div>
+        <div>真名：{{ user.U_RealName}}</div>
         <div>专业：{{ user.U_Major }}</div>
         <div>等级：{{ user.U_Level}}</div>
         <div>称号：</div>
