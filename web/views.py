@@ -60,6 +60,7 @@ def validate_user(request,studentid,password):
             newUserSys = User.objects.create_user(username=studentid, password=password)
             newUserSys.save()
             newUserSys = auth.authenticate(username=studentid, password=password)
+            auth.login(request, newUserSys)
             newUser = BBSUser()
             newUser.U_studentid = studentid
             newUser.U_password = password
@@ -198,7 +199,7 @@ def course_post_detail(request,courseid,postid):
         reply.P_Title = reply_get.P_Title
         reply.P_Content = reply_get.P_Content
         reply.P_Course = thiscourse
-        reply.P_Type = 3
+        reply.P_Type = type_dic['回答贴']
         reply.P_Parent = bigpost
         reply.save()
         myuser.U_GPB += gpb_amount['reply']
@@ -278,6 +279,74 @@ def post_course_post(request,courseid):
         userme.save()
         return HttpResponseRedirect(reverse('course',args=[courseid]))
     return render(request, 'web/post_post.html', {'course':course})
+
+def xuetang_post_detail(request,postid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+
+    myuser = BBSUser.objects.get(user=request.user)
+    bigpost = BBSPost.objects.get(id=postid)
+
+    params = request.POST if request.method == 'POST' else None
+
+    form = ReplyForm(params, instance=None)
+    if form.is_valid():
+        reply_get = form.save(commit=False)
+        print(reply_get.P_Title)
+        reply = BBSPost()
+        reply.P_User = myuser
+        reply.P_Title = reply_get.P_Title
+        reply.P_Content = reply_get.P_Content
+        reply.P_Course = None
+        reply.P_Type = type_dic['大讨论区']
+        reply.P_Parent = bigpost
+        reply.save()
+        myuser.U_GPB += gpb_amount['reply']
+        myuser.save()
+        form = ReplyForm(params, instance=None)
+
+    childrenposts = BBSPost.objects.filter(P_Parent=bigpost)
+    likefilter = UserLikePost.objects.filter(UserID=myuser, PostID=bigpost)
+    islike = 0
+    if len(likefilter) != 0:
+        islike = 1
+    context = {}
+    context['bigpost'] = bigpost
+    context['user'] = myuser
+    context['childrenposts'] = childrenposts
+    context['islike'] = islike
+    context['form'] = form
+    return render(request, 'web/xuetang_bbs_detail.html', context)
+
+def post_xuetang_post_detail(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    if request.method == 'POST':
+        title = request.POST['P_Title'] if request.POST['P_Title'] else ""
+        content = request.POST['P_Content'] if request.POST['P_Content'] else ""
+        type = request.POST['P_Type'] if request.POST['P_Type'] else 0
+        print(2)
+        if not title:
+            return render(request,'web/post_xuetang_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content,'P_Type':type})
+        if not content:
+            return render(request,'web/post_xuetang_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content,'P_Type':type})
+        if not type:
+            return render(request,'web/post_xuetang_post.html',{'error':'请选择帖子类别','P_Title': title,'P_Content': content,'P_Type': type})
+        print(3)
+        userme = BBSUser.objects.get(user=request.user)
+        print(4)
+        post = BBSPost()
+        post.P_User = userme
+        post.P_Title = title
+        post.P_Content = content
+        post.P_Course = None
+        post.P_Type = type_dic['大讨论区']
+        print("1",post)
+        post.save()
+        userme.U_GPB += gpb_amount['post']
+        userme.save()
+        return HttpResponseRedirect('/')
+    return render(request, 'web/post_xuetang_post.html')
 
 
 
