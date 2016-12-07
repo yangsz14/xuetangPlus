@@ -41,9 +41,12 @@ def bbs_list(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     bestposts = BBSPost.objects.filter(P_Parent=None,P_Type=type_dic['大讨论区'])
+
     bestposts = list(bestposts)
     bestposts = sorted(bestposts,key=lambda x:x.P_LikeNum,reverse=True)
-    posts = bestposts[1:10]
+
+    posts = bestposts
+    
     return render(request, 'index.html',{'posts':posts})
 
 
@@ -297,7 +300,7 @@ def xuetang_post_detail(request,postid):
         reply.P_User = myuser
         reply.P_Title = reply_get.P_Title
         reply.P_Content = reply_get.P_Content
-        reply.P_Course = None
+        reply.P_Course = BBSCourse.objects.get(id=1)#此处是错的
         reply.P_Type = type_dic['大讨论区']
         reply.P_Parent = bigpost
         reply.save()
@@ -335,11 +338,12 @@ def post_xuetang_post_detail(request):
         print(3)
         userme = BBSUser.objects.get(user=request.user)
         print(4)
+
         post = BBSPost()
         post.P_User = userme
         post.P_Title = title
         post.P_Content = content
-        post.P_Course = None
+        post.P_Course = BBSCourse.objects.get(id=1)#此处是错的
         post.P_Type = type_dic['大讨论区']
         print("1",post)
         post.save()

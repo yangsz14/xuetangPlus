@@ -27,7 +27,7 @@
         {% endif %}
 
         <div>点赞数：{{ post.P_LikeNum}}</div>
-        <button><a href="www.baidu.com">详情</a></button>
+        <button><a href="/xpostdetail/{{post.id}}/">详情</a></button>
     </li>
 {% empty %}
     <li>抱歉，目前还没有帖子。</li>
