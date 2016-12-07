@@ -3,17 +3,27 @@
 {% block title %}-登录{% endblock %}
 {% block content %}
 
-    <h1>{{ user.U_name }}（这块要改成汉字昵称）您选的{{ course.C_Name }}课程，所有帖子列表</h1>
+    <h1>{{ course.C_Name }}课程讨论区</h1>
+    <h2><a href="/post/{{ course.id }}">发帖</a></h2>
 <ul>
 {% for post in posts %}
     <li>
         <div>题目：{{ post.P_Title }}</div>
         <div>内容：{{ post.P_Content}}</div>
-        <div>头像：此处要有{{ post.P_User.U_Image}}</div>
-        <div>昵称：此处要有{{ post.P_User.U_name}}</div>
-        <div>称号：此处要改成文字 如"邯郸学步"{{ post.P_User.U_name}}</div>
-        <div>类别：此处要改成文字 如"提问，回答，采纳，笔记等"{{ post.P_Type}}</div>
-        <div>点赞数：此处要有{{ post.P_LikeNum}}</div>
+        <div>头像：{{ post.P_User.U_Image}}</div>
+        <div>昵称：{{ post.P_User.U_name}}</div>
+        <div>称号：邯郸学步</div>
+
+        {% if post.P_Type == 0 %}
+            <div>类别：普通贴（代号：{{ post.P_Type}}）</div>
+        {% elif post.P_Type == 1%}
+            <div>类别：提问贴（代号：{{ post.P_Type}}）</div>
+        {% elif post.P_Type == 2%}
+            <div>类别：笔记贴（代号：{{ post.P_Type}}）</div>
+        {% endif %}
+
+        <div>点赞数：{{ post.P_LikeNum}}</div>
+        <button><a href="/course/{{ course.id }}/post/{{ post.id }}">详情</a></button>
     </li>
 {% empty %}
     <li>抱歉，目前还没有帖子。</li>

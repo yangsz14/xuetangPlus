@@ -18,8 +18,16 @@ from django.contrib import auth
 from .models import *
 from django.views.generic.detail import *
 from django.views.generic.list import *
+from django.urls import reverse
+from .forms import *
 
 # Create your views here.
+
+gpb_amount = {
+        'post': 100,
+        'get_liked': 10,
+        'reply': 20,
+    }
 
 def bbs_list(request):
     return render(request, 'index.html')
@@ -56,6 +64,8 @@ def validate_user(request,studentid,password):
 
 
 def login(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect("/")
     if request.method == 'POST':
         studentidin = request.POST['studentid']
         passwordin = request.POST['password']
@@ -74,46 +84,186 @@ class CoursePostListView(ListView):
     pk_courseid_kwarg = 'courseid'
 
     def get_context_data(self,**kwargs):
+
         context = super(CoursePostListView,self).get_context_data(**kwargs)
         courseid = int(self.kwargs.get(self.pk_courseid_kwarg, None))
         #print('mycourseid:', courseid)
         mycourse = BBSCourse.objects.get(id=courseid)
         #print('mycourse:', mycourse)
         #print('myuser:', self.request.user)
+
         if not self.request.user.is_authenticated():
             return HttpResponseRedirect('/login/')
+
         #print('myuser:',self.request.user)
         myuser = BBSUser.objects.get(user=self.request.user)
         #print('myuser:', myuser)
-        posts = BBSPost.objects.filter(P_User=myuser, P_Course=mycourse)
+
+        posts = BBSPost.objects.filter(P_User=myuser, P_Course=mycourse,P_Parent=None)
         context['posts'] = posts
         context['course'] = mycourse
         context['user'] = myuser
+        print("3")
+
         return context
 
-class CoursePostDetailView(ListView):
+# class CoursePostDetailView(ListView):
+#
+#     model = BBSPost
+#     template_name = 'web/course_bbs_detail.html'
+#     pk_courseid_kwarg = 'courseid'
+#     pk_postid_kwarg = 'postid'
+#
+#     def get_context_data(self,**kwargs):
+#         context = super(CoursePostDetailView, self).get_context_data(**kwargs)
+#         courseid = int(self.kwargs.get(self.pk_courseid_kwarg, None))
+#         thiscourse = BBSCourse.objects.get(id=courseid)
+#         if not self.request.user.is_authenticated():
+#             return HttpResponseRedirect('/login/')
+#         myuser = BBSUser.objects.get(user=self.request.user)
+#         postid = int(self.kwargs.get(self.pk_postid_kwarg, None))
+#         bigpost = BBSPost.objects.get(id=postid,P_Course=thiscourse)
+#
+#         params = self.request.POST if self.request.method == 'POST' else None
+#
+#         form = ReplyForm(params)
+#         if form.is_valid():
+#             reply_get = form.save(commit=False)
+#             print(reply_get.P_Title)
+#             reply = BBSPost()
+#             reply.P_User = myuser
+#             reply.P_Title = reply_get.P_Title
+#             reply.P_Content = reply_get.P_Content
+#             reply.P_Type = 3
+#             reply.P_Parent = bigpost
+#             reply.save()
+#             form = ReplyForm(params)
+#
+#         childrenposts = BBSPost.objects.filter(P_Parent=bigpost)
+#         likefilter = UserLikePost.objects.filter(UserID=myuser,PostID=bigpost)
+#         islike = 0
+#         if len(likefilter) != 0:
+#             islike = 1
+#
+#         context['bigpost'] = bigpost
+#         context['course'] = thiscourse
+#         context['user'] = myuser
+#         context['childrenposts'] = childrenposts
+#         context['islike'] = islike
+#         context['form'] = form
+#         return context
 
-    model = BBSPost
-    template_name = 'web/course_bbs_detail.html'
-    pk_courseid_kwarg = 'courseid'
-    pk_postid_kwarg = 'postid'
+# class UserDetailView(DetailView):
+#
+#     model = BBSUser
+#     template_name = 'web/user_self_info.html'
+#
+#     def get_context_data(self,**kwargs):
+#         context = super(UserDetailView, self).get_context_data(**kwargs)
+#         if not self.request.user.is_authenticated():
+#             return HttpResponseRedirect('/login/')
+#         userme = BBSUser.objects.get(user=self.request.user)
+#         context['user'] = userme
+#         return context
 
-    def get_context_data(self,**kwargs):
-        posts = BBSPost.objects.all()
-        print(posts[0].id)
-        context = super(CoursePostDetailView, self).get_context_data(**kwargs)
-        courseid = int(self.kwargs.get(self.pk_courseid_kwarg, None))
-        thiscourse = BBSCourse.objects.get(id=courseid)
-        if not self.request.user.is_authenticated():
-            return HttpResponseRedirect('/login/')
-        myuser = BBSUser.objects.get(user=self.request.user)
-        postid = int(self.kwargs.get(self.pk_postid_kwarg, None))
-        bigpost = BBSPost.objects.get(id=postid,P_Course=thiscourse)
-        childrenposts = BBSPost.objects.filter(P_Parent=bigpost)
-        context['bigpost'] = bigpost
-        context['course'] = thiscourse
-        context['user'] = myuser
-        context['childrenposts'] = childrenposts
-        return context
+def course_post_detail(request,courseid,postid):
+    thiscourse = BBSCourse.objects.get(id=courseid)
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    myuser = BBSUser.objects.get(user=request.user)
+    bigpost = BBSPost.objects.get(id=postid, P_Course=thiscourse)
+
+    params = request.POST if request.method == 'POST' else None
+
+    form = ReplyForm(params,instance=None)
+    if form.is_valid():
+        reply_get = form.save(commit=False)
+        print(reply_get.P_Title)
+        reply = BBSPost()
+        reply.P_User = myuser
+        reply.P_Title = reply_get.P_Title
+        reply.P_Content = reply_get.P_Content
+        reply.P_Course = thiscourse
+        reply.P_Type = 3
+        reply.P_Parent = bigpost
+        reply.save()
+        myuser.U_GPB += gpb_amount['reply']
+        myuser.save()
+        form = ReplyForm(params,instance=None)
+
+    childrenposts = BBSPost.objects.filter(P_Parent=bigpost)
+    likefilter = UserLikePost.objects.filter(UserID=myuser, PostID=bigpost)
+    islike = 0
+    if len(likefilter) != 0:
+        islike = 1
+    context = {}
+    context['bigpost'] = bigpost
+    context['course'] = thiscourse
+    context['user'] = myuser
+    context['childrenposts'] = childrenposts
+    context['islike'] = islike
+    context['form'] = form
+    return render(request,'web/course_bbs_detail.html',context)
+
+
+def user_self_info(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    userme = BBSUser.objects.get(user=request.user)
+    return render(request,'web/user_self_info.html',{'user':userme})
+
+@csrf_exempt
+def like_post_deal(request):
+    userme = BBSUser.objects.get(user=request.user)
+    post = BBSPost.objects.get(id=int(request.POST['postID']))
+    postuser = BBSUser.objects.get(id=post.P_User.id)
+    if UserLikePost.objects.filter(UserID=userme.id, PostID=post).exists():
+        UserLikePost.objects.get(UserID=userme.id, PostID=post).delete()
+        post.P_LikeNum -= 1
+        post.save()
+        postuser.U_GPB -= gpb_amount['get_liked']
+        postuser.save()
+    else:
+        newLikePost = UserLikePost()
+        newLikePost.UserID = userme
+        newLikePost.PostID = post
+        newLikePost.save()
+        post.P_LikeNum += 1
+        post.save()
+        postuser.U_GPB += gpb_amount['get_liked']
+        postuser.save()
+
+    return HttpResponse('follow success')
+
+def post_course_post(request,courseid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    course = BBSCourse.objects.get(id=courseid)
+    if request.method == 'POST':
+        title = request.POST['P_Title'] if request.POST['P_Title'] else ""
+        content = request.POST['P_Content'] if request.POST['P_Content'] else ""
+        type = request.POST['P_Type'] if request.POST['P_Type'] else 0
+
+        if not title:
+            return render(request,'web/post_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content,'P_Type':type,'course':course})
+        if not content:
+            return render(request,'web/post_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content,'P_Type':type,'course':course})
+        if not type:
+            return render(request,'web/post_post.html',{'error':'请选择帖子类别','P_Title': title,'P_Content': content,'P_Type': type,'course':course})
+
+        userme = BBSUser.objects.get(user=request.user)
+
+        post = BBSPost()
+        post.P_User = userme
+        post.P_Title = title
+        post.P_Content = content
+        post.P_Course = course
+        post.P_Type = type
+        post.save()
+        userme.U_GPB += gpb_amount['post']#暂时立即数
+        userme.save()
+        return HttpResponseRedirect(reverse('course',args=[courseid]))
+    return render(request, 'web/post_post.html', {'course':course})
+
 
 
