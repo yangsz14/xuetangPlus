@@ -1,0 +1,68 @@
+.navbar-inner {
+  background-color: #000;
+}
+.navbar-header
+.navbar-brand{
+    color: rgb(236, 236, 236);
+}
+
+body{
+    background-color: rgba(118, 136, 136, 0.31);;
+}
+
+.container{
+    height: 200px;
+    width: 1000px;
+}
+
+#product div{
+    color: rgb(0,0,0);
+}
+
+.item{
+    height: 100%;
+}
+
+.row{
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin: 0;
+    height: 100%;
+    border:2px solid rgb(255, 255, 255);
+    border-radius: 10px;
+    background: rgb(236, 236, 236);
+}
+
+#product .image{
+    width: 200px;
+}
+
+#product {
+    width: 100%;
+    height: 100%;
+}
+
+
+#product .name{
+    font-weight: bold;
+    text-align:center;
+    font-size: 32px;
+}
+
+#product .content{
+    height: 40%;
+    font-size: 18px;
+}
+
+h1{
+    text-align:center;
+}
+
+#product .good{
+    text-align:right;
+}
+
+#product .cat{
+    text-align:right;
+}
