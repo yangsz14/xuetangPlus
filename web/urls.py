@@ -1,8 +1,6 @@
 from django.conf.urls import url
 from . import views
 from .views import *
-
-
 urlpatterns = [
     url(r'^$', views.bbs_list, name='index'),
     url(r'^course/(?P<courseid>\d+)/$', CoursePostListView.as_view(),name='course'),
