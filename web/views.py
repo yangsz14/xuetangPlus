@@ -29,8 +29,22 @@ gpb_amount = {
         'reply': 20,
     }
 
+type_dic = {
+    '普通贴':0,
+    '提问贴':1,
+    '笔记贴':2,
+    '回答贴':3,
+    '大讨论区':4,
+}
+
 def bbs_list(request):
-    return render(request, 'index.html')
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    bestposts = BBSPost.objects.filter(P_Parent=None,P_Type=type_dic['大讨论区'])
+    bestposts = list(bestposts)
+    bestposts = sorted(bestposts,key=lambda x:x.P_LikeNum,reverse=True)
+    posts = bestposts[1:10]
+    return render(request, 'index.html',{'posts':posts})
 
 
 def validate_user(request,studentid,password):

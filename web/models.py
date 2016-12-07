@@ -7,7 +7,8 @@ class BBSUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     U_studentid = models.CharField(max_length=15)
     U_password = models.CharField(max_length=100)
-    U_name = models.TextField(blank=True)
+    U_name = models.CharField(blank=True,max_length=50)
+    U_RealName = models.CharField(blank=True,max_length=50)
     U_Major = models.TextField(blank=True)
     U_Description = models.TextField(null=True, blank=True)
     U_Image = models.ImageField(null=True, blank=True)
@@ -26,6 +27,7 @@ class BBSUser(models.Model):
 
 class BBSCourse(models.Model):
     C_Name = models.CharField(max_length=100)
+    C_SeqNum = models.CharField(blank=True,max_length=10)
 
     def __str__(self):
         return self.C_Name
