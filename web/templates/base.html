@@ -17,7 +17,13 @@
     {% block header %}
     <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
-            <div class="navbar-brand">学堂Plus<div/>
+            <a class="navbar-brand" href="{%url 'index'%}">学堂Plus</a>
+        </div>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{%url 'me'%}">我</a>
+        </div>
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/course/1/">软件工程(3)</a>
         </div>
 
     </nav>

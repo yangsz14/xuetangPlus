@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}-登录{% endblock %}
+
 {% block content %}
 
     <h1>{{ user.U_name }}（这块要改成汉字昵称）您选的{{ course.C_Name }}课程，帖子详情</h1>
@@ -12,6 +13,12 @@
         <div>称号：此处要改成文字 如"邯郸学步"{{ bigpost.P_User.U_name}}</div>
         <div>类别：此处要改成文字 如"提问，回答，采纳，笔记等"{{ bigpost.P_Type}}</div>
         <div>点赞数：此处要有{{ bigpost.P_LikeNum}}</div>
+
+        {% if islike %}
+            <input id="{{ bigpost.id }}" type="button" class="likeBtn blue mybutton" value="取消" onclick="javascript:likebtn(this)">
+        {% else %}
+            <input id="{{ bigpost.id }}" type="button" class="likeBtn blue mybutton" value="点赞" onclick="javascript:likebtn(this)">
+        {% endif %}
     </li>
     <div>分块 下面是楼下</div>
 <ul>
@@ -28,6 +35,39 @@
 {% empty %}
     <li>目前还没有回帖，快来抢个沙发吧</li>
 {% endfor %}
+
+        <div style="text-align:left;font-size:20px;font-family:STKaiti;padding-top:15%" id="form_div_of_register">
+            <form method="post" action=".">
+              {% csrf_token %}
+              {{ form.as_p }}
+
+              <input type="submit" value="提交" />
+            </form>
+        </div>
+
+    <script type="text/javascript">
+    function likebtn(obj) {
+        console.log(obj)
+        $.ajax
+        ({
+            url: '/like_post_deal/',
+            type: 'POST',
+            data: {'postID': obj.id},
+            success: function(data) {
+
+                if (obj.value == '取消') {
+                obj.value = '点赞';
+                }
+                else {
+                    obj.value = '取消';
+                }
+            }
+        })
+    }
+    </script>
+
 </ul>
 
 {% endblock %}
+
+

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}-登录{% endblock %}
+{% block content %}
+
+    <h1>{{ user.U_name }}（这块要改成汉字昵称）您的信息</h1>
+    <li>
+        <div>头像：{{ user.U_Image}}</div>
+        <div>昵称：{{ user.U_name}}</div>
+        <div>专业：{{ user.U_Major }}</div>
+        <div>等级：{{ user.U_Level}}</div>
+        <div>称号：</div>
+        <div>GP币：{{ user.U_GPB }}</div>
+        <div>签名：{{ user.U_Description }}</div>
+        <button>我的关注：{{ user.U_FollowUserNum }}</button>
+        <button>我的点赞：{{ user.U_FollowPostNum }}</button>
+        <button>我的提问：{{ user.U_QuestionNum }}</button>
+        <button>我的回答：{{ user.U_AnswerNum }}</button>
+    </li>
+
+{% endblock %}

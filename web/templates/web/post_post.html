@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}-登录{% endblock %}
+{% block content %}
+
+    <div class="form">
+    <div class="register panel panel-default ">
+        <h2>添加帖子</h2>
+        {% if error %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <strong>Error!</strong> {{ error }}
+            </div>
+        {% endif %}
+        <form class="form-base" action="/post/{{course.id}}/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form_row">
+                <label for="id_title">题目:</label>
+                <input type="text" class="form-control" placeholder="Title" name="P_Title" value="{{ P_Title }}">
+            </div>
+
+            <div class="form_row">
+                <label for="id_content">内容:</label>
+                <input type="text" class="form-control" placeholder="Content" name="P_Content" value="{{ P_Content }}">
+            </div>
+
+            <div class="form_row">
+                <label for="id_type">类型:</label>
+                <input type="text" class="form-control" placeholder="Type" name="P_Type" value="{{ P_Type }}">
+            </div>
+
+            <input type="submit" class="btn btn-success form_button" value="确认">
+        </form>
+        <div class="form_row">
+            <label><a href="/course/{{ course.id }}/">返回</a></label>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}
