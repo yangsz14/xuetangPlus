@@ -5,9 +5,9 @@
 
     <h1>{{ course.C_Name }}课程讨论区</h1>
 <ul>
-<div class="container">
+
 {% for post in posts %}
-    
+    <div class="container">
     <div class="row">
         <div class="col-xs-4 item">
             <div>
@@ -32,10 +32,11 @@
             </div>
         </div>
     </div>
+     </div>
 {% empty %}
     <li>抱歉，目前还没有帖子。</li>
 {% endfor %}
- </div>
+
 </ul>
 <a class="fatie" href="/post/{{ course.id }}"><img src="{{BASE_DIR}}/static/123.png" width="100px" height="100px"></a>
 {% endblock %}
