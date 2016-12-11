@@ -18,7 +18,7 @@ from django.contrib import auth
 from .models import *
 from django.views.generic.detail import *
 from django.views.generic.list import *
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from .forms import *
 
 # Create your views here.
