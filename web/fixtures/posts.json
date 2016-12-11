@@ -1,0 +1,18 @@
+[{
+  "model": "web.BBSPost",
+  "pk": 1,
+  "fields": {
+    "P_User": 1,
+    "P_Course": 1,
+    "P_Type": 0,
+    "P_Title": "orzzq",
+    "P_Content": "modashi",
+    "P_Time": "2016-11-11 00:00:00+00:00",
+    "P_LastComTime": "2016-11-12 00:00:00+00:00",
+    "P_LikeNum": 3,
+    "P_Section": 0,
+    "P_Parent": 1,
+    "P_ReplyNum": 20,
+    "P_Top": 0
+  }
+}]
