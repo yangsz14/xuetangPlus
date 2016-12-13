@@ -5,42 +5,38 @@
 
     <h1>{{ course.C_Name }}课程讨论区</h1>
 <ul>
-<div class="container">
+
 {% for post in posts %}
-    
+    <div class="container">
     <div class="row">
         <div class="col-xs-4 item">
-        <div id="product">
-            <div>昵称：{{ post.P_User.U_name}}</div>
             <div>
             <img class="image" src="{{BASE_DIR}}/media/{{post.P_User.U_Image}}"/>
             </div>
-            <div>称号：邯郸学步</div>
-        </div>
+            <div class="info">昵称：{{ post.P_User.U_name}}</div>
+            <div class="info">称号：邯郸学步</div>
         </div>
         <div class="col-xs-8 item">
-        <div id="product">
             <div class="name">{{ post.P_Title }}</div>
             <div class="content">{{ post.P_Content}}</div>
             {% if post.P_Type == 0 %}
-                <div class="cat">类别：普通贴</div>
+                <div class="cat info">类别：普通贴</div>
             {% elif post.P_Type == 1%}
-                <div class="cat">类别：提问贴</div>
+                <div class="cat info">类别：提问贴</div>
             {% elif post.P_Type == 2%}
-                <div class="cat">类别：笔记贴</div>
+                <div class="cat info">类别：笔记贴</div>
             {% endif %}
-
-            <div class="good">点赞数：{{ post.P_LikeNum}}</div>
+            <div class="good info">点赞数：{{ post.P_LikeNum}}</div>
             <div class="pull-right">
             <button class="btn blue"><a href="/course/{{ course.id }}/post/{{ post.id }}">详情</a></button>
             </div>
         </div>
-        </div>
     </div>
+     </div>
 {% empty %}
     <li>抱歉，目前还没有帖子。</li>
 {% endfor %}
- </div>
+
 </ul>
-<h2 class="btn btn-default blue fatie"><a href="/post/{{ course.id }}">发帖</a></h2>
+<a class="fatie" href="/post/{{ course.id }}"><img src="{{BASE_DIR}}/static/123.png" width="100px" height="100px"></a>
 {% endblock %}
