@@ -5,6 +5,11 @@
 {% block content %}
     
     <h1>{{ user.U_name }}您选的{{ course.C_Name }}课程，帖子详情</h1>
+
+    <div class="form_row">
+        <label><a href="/course/{{ course.id }}/">返回</a></label>
+    </div>
+
     <div class="container">
     <div class="row">
         <div class="col-xs-4 item">
@@ -24,7 +29,7 @@
             {% elif bigpost.P_Type == 2%}
                 <div class="cat info">类别：笔记贴</div>
             {% endif %}
-            <div class="good info">点赞数：{{ bigpost.P_LikeNum}}</div>
+            <div class="good info">点赞数：<span id="likeid">{{ bigpost.P_LikeNum}}</span></div>
             <div class="pull-right">
             {% if islike %}
             <input id="{{ bigpost.id }}" type="button" class="btn btn-default likeBtn blue mybutton" value="取消" onclick="javascript:likebtn(this)">
@@ -56,7 +61,6 @@
             {% elif post.P_Type == 2%}
                 <div class="cat info">类别：笔记贴</div>
             {% endif %}
-            <div class="good info">点赞数：{{ post.P_LikeNum}}</div>
             <div class="pull-right">
             </div>
         </div>
@@ -87,9 +91,13 @@
 
                 if (obj.value == '取消') {
                 obj.value = '点赞';
+                    likedom = document.getElementById("likeid")
+                    likedom.innerHTML = (parseInt(likedom.innerHTML) - 1).toString();
                 }
                 else {
                     obj.value = '取消';
+                    likedom = document.getElementById("likeid")
+                    likedom.innerHTML = (parseInt(likedom.innerHTML) + 1).toString();
                 }
             }
         })

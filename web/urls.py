@@ -9,8 +9,10 @@ urlpatterns = [
     url(r'^me/$',views.user_self_info,name='me'),
     url(r'^like_post_deal/$', views.like_post_deal),
     url(r'^post/(\d+)/$',views.post_course_post,name='newpost'),
-    url(r'^xpostdetail/(\d+)/$',views.xuetang_post_detail),
-    url(r'^postxpostdetail/$',views.post_xuetang_post_detail),
+    url(r'^xpostdetail/(\d+)/(\w+)/$',views.xuetang_post_detail),
+    url(r'^postxpostdetail/(\w+)/$',views.post_xuetang_post_detail),
+    url(r'^(\w+)/$',views.xuetang_notice),
+
     #迭代一前请写一下用户修改个人信息的页面，麻烦了
     #迭代一前请写一下用户发帖的页面，麻烦了
 ]

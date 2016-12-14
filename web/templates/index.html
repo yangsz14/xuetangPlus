@@ -10,27 +10,6 @@
     </h2>
 
     <ul>
-{% for post in posts %}
-    <li>
-        <div>题目：{{ post.P_Title }}</div>
-        <div>内容：{{ post.P_Content}}</div>
-        <div>头像：{{ post.P_User.U_Image}}</div>
-        <div>昵称：{{ post.P_User.U_name}}</div>
-        <div>称号：邯郸学步</div>
 
-        {% if post.P_Type == 0 %}
-            <div>类别：普通贴（代号：{{ post.P_Type}}）</div>
-        {% elif post.P_Type == 1%}
-            <div>类别：提问贴（代号：{{ post.P_Type}}）</div>
-        {% elif post.P_Type == 2%}
-            <div>类别：笔记贴（代号：{{ post.P_Type}}）</div>
-        {% endif %}
-
-        <div>点赞数：{{ post.P_LikeNum}}</div>
-        <button><a href="/xpostdetail/{{post.id}}/">详情</a></button>
-    </li>
-{% empty %}
-    <li>抱歉，目前还没有帖子。</li>
-{% endfor %}
 </ul>
 {% endblock %}

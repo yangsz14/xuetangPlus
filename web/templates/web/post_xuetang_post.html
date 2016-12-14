@@ -13,7 +13,7 @@
                 <strong>Error!</strong> {{ error }}
             </div>
         {% endif %}
-        <form class="form-base" action="/postxpostdetail/" method="post" enctype="multipart/form-data">
+        <form class="form-base" action="/postxpostdetail/{{ source }}/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div class="form_row">
@@ -27,8 +27,8 @@
             </div>
 
             <div class="form_row">
-                <label for="id_type">类型:</label>
-                <input type="text" class="form-control" placeholder="Type" name="P_Type" value="{{ P_Type }}">
+                <label for="id_type">分区:{{ source }}</label>
+
             </div>
 
             <input type="submit" class="btn btn-success form_button" value="确认">

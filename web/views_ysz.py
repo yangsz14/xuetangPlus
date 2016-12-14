@@ -18,8 +18,9 @@ from django.contrib import auth
 from .models import *
 from django.views.generic.detail import *
 from django.views.generic.list import *
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from .forms import *
+from .urls import *
 import requests
 
 # Create your views here.
@@ -38,53 +39,14 @@ type_dic = {
     '大讨论区':4,
 }
 
-sec_dic = {
-    'notice':0,
-    'complaint':1,
-    'chat':2,
-    'science':3,
-    'engineer':4,
-    'pe':5,
-    'politics':6,
-    'culture':7,
-    'english':8,
-    'otherlan':9,
-    'freeselection':10,
-}
-
-title_dic = {
-    'notice':"公告区",
-    'complaint':"投诉区",
-    'chat':"七嘴八舌",
-    'science':"理科大讨论",
-    'engineer':"工科大讨论",
-    'pe':"体育大讨论",
-    'politics':"政治大讨论",
-    'culture':"文核文素大讨论",
-    'english':"英语大讨论",
-    'otherlan':"二外大讨论",
-    'freeselection':"任选大讨论",
-}
-
-def get_courses(user):
-    myuser = BBSUser.objects.get(user=user)
-    relas = UserHasCourse.objects.filter(UserID=myuser);
-    courses = []
-    for rela in relas:
-        courses.append(rela.CourseID)
-    return courses
-
 def bbs_list(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     bestposts = BBSPost.objects.filter(P_Parent=None,P_Type=type_dic['大讨论区'])
-
     bestposts = list(bestposts)
     bestposts = sorted(bestposts,key=lambda x:x.P_LikeNum,reverse=True)
-
-    posts = bestposts
-    courses = get_courses(request.user)
-    return render(request, 'index.html',{'posts':posts,'courses':courses})
+    posts = bestposts[1:10]
+    return render(request, 'index.html',{'posts':posts})
 
 def update_course_info(studentid):
     response = requests.post('http://se.zhuangty.com:8000/curriculum/'+studentid, data={"apikey": "API Key", "apisecret": "API Secret Key"})
@@ -108,7 +70,6 @@ def update_course_info(studentid):
                 newUserHasCourse.UserID = UserID
                 newUserHasCourse.CourseID = CourseID
                 newUserHasCourse.save()
-
 
 def validate_user(request,studentid,password):
     response = requests.post('http://se.zhuangty.com:8000/users/register', data={"apikey": "API Key", "apisecret": "API Secret Key", "username": studentid, "password": password})
@@ -179,8 +140,6 @@ class CoursePostListView(ListView):
         context['posts'] = posts
         context['course'] = mycourse
         context['user'] = myuser
-        courses = get_courses(self.request.user)
-        context['courses'] = courses
         print("3")
 
         return context
@@ -262,7 +221,7 @@ def course_post_detail(request,courseid,postid):
         reply.P_Title = reply_get.P_Title
         reply.P_Content = reply_get.P_Content
         reply.P_Course = thiscourse
-        reply.P_Type = type_dic['回答贴']
+        reply.P_Type = 3
         reply.P_Parent = bigpost
         reply.save()
         myuser.U_GPB += gpb_amount['reply']
@@ -281,8 +240,6 @@ def course_post_detail(request,courseid,postid):
     context['childrenposts'] = childrenposts
     context['islike'] = islike
     context['form'] = form
-    courses = get_courses(request.user)
-    context['courses'] = courses
     return render(request,'web/course_bbs_detail.html',context)
 
 
@@ -290,8 +247,7 @@ def user_self_info(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     userme = BBSUser.objects.get(user=request.user)
-    courses = get_courses(request.user)
-    return render(request,'web/user_self_info.html',{'user':userme, 'courses':courses})
+    return render(request,'web/user_self_info.html',{'user':userme})
 
 @csrf_exempt
 def like_post_deal(request):
@@ -320,18 +276,17 @@ def post_course_post(request,courseid):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     course = BBSCourse.objects.get(id=courseid)
-    courses = get_courses(request.user)
     if request.method == 'POST':
         title = request.POST['P_Title'] if request.POST['P_Title'] else ""
         content = request.POST['P_Content'] if request.POST['P_Content'] else ""
         type = request.POST['P_Type'] if request.POST['P_Type'] else 0
 
         if not title:
-            return render(request,'web/post_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content,'P_Type':type,'course':course, 'courses':courses})
+            return render(request,'web/post_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content,'P_Type':type,'course':course})
         if not content:
-            return render(request,'web/post_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content,'P_Type':type,'course':course, 'courses':courses})
+            return render(request,'web/post_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content,'P_Type':type,'course':course})
         if not type:
-            return render(request,'web/post_post.html',{'error':'请选择帖子类别','P_Title': title,'P_Content': content,'P_Type': type,'course':course, 'courses':courses})
+            return render(request,'web/post_post.html',{'error':'请选择帖子类别','P_Title': title,'P_Content': content,'P_Type': type,'course':course})
 
         userme = BBSUser.objects.get(user=request.user)
 
@@ -345,88 +300,7 @@ def post_course_post(request,courseid):
         userme.U_GPB += gpb_amount['post']#暂时立即数
         userme.save()
         return HttpResponseRedirect(reverse('course',args=[courseid]))
-    return render(request, 'web/post_post.html', {'course':course, 'courses':courses})
-
-def xuetang_post_detail(request,postid,source):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
-
-    myuser = BBSUser.objects.get(user=request.user)
-    bigpost = BBSPost.objects.get(id=postid)
-
-    params = request.POST if request.method == 'POST' else None
-
-    form = ReplyForm(params, instance=None)
-    if form.is_valid():
-        reply_get = form.save(commit=False)
-        print(reply_get.P_Title)
-        reply = BBSPost()
-        reply.P_User = myuser
-        reply.P_Title = reply_get.P_Title
-        reply.P_Content = reply_get.P_Content
-        reply.P_Course = BBSCourse.objects.get(id=1)#此处是错的
-        reply.P_Type = type_dic['大讨论区']
-        reply.P_Parent = bigpost
-        reply.save()
-        myuser.U_GPB += gpb_amount['reply']
-        myuser.save()
-        form = ReplyForm(params, instance=None)
-
-    childrenposts = BBSPost.objects.filter(P_Parent=bigpost)
-    likefilter = UserLikePost.objects.filter(UserID=myuser, PostID=bigpost)
-    islike = 0
-    if len(likefilter) != 0:
-        islike = 1
-    context = {}
-    context['bigpost'] = bigpost
-    context['user'] = myuser
-    context['childrenposts'] = childrenposts
-    context['islike'] = islike
-    context['form'] = form
-    context['source'] = source
-    courses = get_courses(request.user)
-    context['courses'] = courses
-    return render(request, 'web/xuetang_bbs_detail.html', context)
-
-def post_xuetang_post_detail(request,source):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
-    courses = get_courses(request.user)
-    if request.method == 'POST':
-        title = request.POST['P_Title'] if request.POST['P_Title'] else ""
-        content = request.POST['P_Content'] if request.POST['P_Content'] else ""
-        if not title:
-            return render(request,'web/post_xuetang_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content, 'courses':courses})
-        if not content:
-            return render(request,'web/post_xuetang_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content, 'courses':courses})
-        if not type:
-            return render(request,'web/post_xuetang_post.html',{'error':'请选择帖子类别','P_Title': title,'P_Content': content, 'courses':courses})
-
-        userme = BBSUser.objects.get(user=request.user)
-
-        post = BBSPost()
-        post.P_User = userme
-        post.P_Title = title
-        post.P_Content = content
-        post.P_Course = BBSCourse.objects.get(id=1)#此处是错的
-        post.P_Type = type_dic['大讨论区']
-        post.P_Section = sec_dic[source]
-        post.save()
-        userme.U_GPB += gpb_amount['post']
-        userme.save()
-        return HttpResponseRedirect("/"+source+"/")
-
-    return render(request, 'web/post_xuetang_post.html',{'source':source,'courses':courses})
-
-def xuetang_notice(request,source):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
-    bestposts = BBSPost.objects.filter(P_Parent=None, P_Type=type_dic['大讨论区'],P_Section=sec_dic[source])
-    bestposts = list(bestposts)
-    bestposts = sorted(bestposts, key=lambda x: x.P_Time, reverse=True)
-    posts = bestposts
-    courses = get_courses(request.user)
-    return render(request, 'web/xuetang_list.html', {'posts': posts,'title':title_dic[source],'source':source,'courses':courses})
+    return render(request, 'web/post_post.html', {'course':course})
 
 
 

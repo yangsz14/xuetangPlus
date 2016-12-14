@@ -4,48 +4,72 @@
 
 {% block content %}
 
-    <h1>帖子详情</h1>
-    <li>
-        <div>题目：{{ bigpost.P_Title }}</div>
-        <div>内容：{{ bigpost.P_Content}}</div>
-        <div>头像：{{ bigpost.P_User.U_Image}}</div>
-        <div>昵称：{{ bigpost.P_User.U_name}}</div>
-        <div>称号：邯郸学步</div>
-        {% if bigpost.P_Type == 0 %}
-            <div>类别：普通贴（代号：{{ bigpost.P_Type}}）</div>
-        {% elif bigpost.P_Type == 1%}
-            <div>类别：提问贴（代号：{{ bigpost.P_Type}}）</div>
-        {% elif bigpost.P_Type == 2%}
-            <div>类别：笔记贴（代号：{{ bigpost.P_Type}}）</div>
-        {% endif %}
-        <div>点赞数：此处要有{{ bigpost.P_LikeNum}}</div>
+    <h1>{{ user.U_name }}帖子详情</h1>
 
-        {% if islike %}
-            <input id="{{ bigpost.id }}" type="button" class="likeBtn blue mybutton" value="取消" onclick="javascript:likebtn(this)">
-        {% else %}
-            <input id="{{ bigpost.id }}" type="button" class="likeBtn blue mybutton" value="点赞" onclick="javascript:likebtn(this)">
-        {% endif %}
-    </li>
-    <div>分块 下面是楼下</div>
-<ul>
+    <div class="form_row">
+        <label><a href="/{{ source }}/">返回</a></label>
+    </div>
+
+    <div class="container">
+    <div class="row">
+        <div class="col-xs-4 item">
+            <div>
+            <img class="image" src="{{BASE_DIR}}/media/{{bigpost.P_User.U_Image}}"/>
+            </div>
+            <div class="info">昵称：{{ bigpost.P_User.U_name}}</div>
+            <div class="info">称号：邯郸学步</div>
+        </div>
+        <div class="col-xs-8 item">
+            <div class="name">{{ bigpost.P_Title }}</div>
+            <div class="content">{{ bigpost.P_Content}}</div>
+            {% if bigpost.P_Type == 0 %}
+                <div class="cat info">类别：普通贴</div>
+            {% elif bigpost.P_Type == 1%}
+                <div class="cat info">类别：提问贴</div>
+            {% elif bigpost.P_Type == 2%}
+                <div class="cat info">类别：笔记贴</div>
+            {% endif %}
+            <div class="good info">点赞数：<span id="likeid">{{ bigpost.P_LikeNum}}</span></div>
+            <div class="pull-right">
+            {% if islike %}
+            <input id="{{ bigpost.id }}" type="button" class="btn btn-default likeBtn blue mybutton" value="取消" onclick="javascript:likebtn(this)">
+            {% else %}
+            <input id="{{ bigpost.id }}" type="button" class="btn btn-default likeBtn blue mybutton" value="点赞" onclick="javascript:likebtn(this)">
+            {% endif %}
+            </div>
+        </div>
+    </div>
+     </div>
+
 {% for post in childrenposts %}
-    <li>
-        <div>题目：{{ post.P_Title }}</div>
-        <div>内容：{{ post.P_Content}}</div>
-        <div>头像：{{ post.P_User.U_Image}}</div>
-        <div>昵称：{{ post.P_User.U_name}}</div>
-        <div>称号：邯郸学步</div>
-        {% if post.P_Type == 0 %}
-            <div>类别：普通贴（代号：{{ post.P_Type}}）</div>
-        {% elif post.P_Type == 1%}
-            <div>类别：提问贴（代号：{{ post.P_Type}}）</div>
-        {% elif post.P_Type == 2%}
-            <div>类别：笔记贴（代号：{{ post.P_Type}}）</div>
-        {% endif %}
-        <div>点赞数：{{ post.P_LikeNum}}</div>
-    </li>
+<div class="container child">
+    <div class="row">
+        <div class="col-xs-4 item">
+            <div>
+            <img class="image" src="{{BASE_DIR}}/media/{{post.P_User.U_Image}}"/>
+            </div>
+            <div class="info">昵称：{{ post.P_User.U_name}}</div>
+            <div class="info">称号：邯郸学步</div>
+        </div>
+        <div class="col-xs-8 item">
+            <div class="name">{{ post.P_Title }}</div>
+            <div class="content">{{ post.P_Content}}</div>
+            {% if post.P_Type == 0 %}
+                <div class="cat info">类别：普通贴</div>
+            {% elif post.P_Type == 1%}
+                <div class="cat info">类别：提问贴</div>
+            {% elif post.P_Type == 2%}
+                <div class="cat info">类别：笔记贴</div>
+            {% endif %}
+            <div class="good info">点赞数：{{ post.P_LikeNum}}</div>
+            <div class="pull-right">
+            </div>
+        </div>
+    </div>
+    </div>
+
 {% empty %}
-    <li>目前还没有回帖，快来抢个沙发吧</li>
+
 {% endfor %}
 
         <div style="text-align:left;font-size:20px;font-family:STKaiti;padding-top:15%" id="form_div_of_register">
@@ -69,9 +93,13 @@
 
                 if (obj.value == '取消') {
                 obj.value = '点赞';
+                    likedom = document.getElementById("likeid")
+                    likedom.innerHTML = (parseInt(likedom.innerHTML) - 1).toString();
                 }
                 else {
                     obj.value = '取消';
+                    likedom = document.getElementById("likeid")
+                    likedom.innerHTML = (parseInt(likedom.innerHTML) + 1).toString();
                 }
             }
         })
