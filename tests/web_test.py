@@ -13,7 +13,7 @@ import time
 from django.test import *
 
 class LoginTest(LiveServerTestCase):
-    fixtures = ['users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
+    fixtures = ['authUsers.json','users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
     browser = None
 
     @classmethod
@@ -44,13 +44,13 @@ class LoginTest(LiveServerTestCase):
         password_box.send_keys("")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
         self.browser.implicitly_wait(2)
         print("self.browser",self.browser)
-       # self.browser.save_screenshot('3.png')
+        self.browser.save_screenshot('4.png')
         self.assertIn('Error', self.browser.find_element_by_id('content').text)
 
     def test_login_with_wrong_input(self):
@@ -68,7 +68,7 @@ class LoginTest(LiveServerTestCase):
         password_box.send_keys("wrongpwd")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -92,17 +92,17 @@ class LoginTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
         self.browser.implicitly_wait(2)
         print("self.browser",self.browser)
-       # self.browser.save_screenshot('3.png')
+        self.browser.save_screenshot('3.png')
         self.assertIn('学堂讨论区', self.browser.find_element_by_id('content').text)
 
 class BBSListTest(LiveServerTestCase):
-    fixtures = ['users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
+    fixtures = ['authUsers.json','users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
     browser = None
 
     @classmethod
@@ -145,7 +145,7 @@ class BBSListTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -155,7 +155,7 @@ class BBSListTest(LiveServerTestCase):
         self.assertIn('学堂讨论区', self.browser.find_element_by_id('content').text)
 
 class CoursePostListViewTest(LiveServerTestCase):
-    fixtures = ['users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
+    fixtures = ['authUsers.json','users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
     browser = None
 
     @classmethod
@@ -198,7 +198,7 @@ class CoursePostListViewTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -218,7 +218,7 @@ class CoursePostListViewTest(LiveServerTestCase):
         self.assertIn('课程讨论区', self.browser.find_element_by_id('content').text)
 
 class CoursePostDetailTest(LiveServerTestCase):
-    fixtures = ['users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
+    fixtures = ['authUsers.json','users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
     browser = None
 
     @classmethod
@@ -261,7 +261,7 @@ class CoursePostDetailTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -295,7 +295,7 @@ class CoursePostDetailTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -336,7 +336,7 @@ class CoursePostDetailTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -374,7 +374,7 @@ class CoursePostDetailTest(LiveServerTestCase):
         self.assertIn('学堂讨论区', self.browser.find_element_by_id('content').text)
 
 class UserSelfInfoTest(LiveServerTestCase):
-    fixtures = ['users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
+    fixtures = ['authUsers.json','users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
     browser = None
 
     @classmethod
@@ -417,7 +417,7 @@ class UserSelfInfoTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -437,7 +437,7 @@ class UserSelfInfoTest(LiveServerTestCase):
         self.assertIn('信息', self.browser.find_element_by_id('content').text)
 
 class PostCoursePostTest(LiveServerTestCase):
-    fixtures = ['users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
+    fixtures = ['authUsers.json','users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
     browser = None
 
     @classmethod
@@ -480,7 +480,7 @@ class PostCoursePostTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -506,7 +506,7 @@ class PostCoursePostTest(LiveServerTestCase):
         type_box.send_keys("0")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -530,7 +530,7 @@ class PostCoursePostTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -556,7 +556,7 @@ class PostCoursePostTest(LiveServerTestCase):
         type_box.send_keys("0")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -580,7 +580,7 @@ class PostCoursePostTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -606,7 +606,7 @@ class PostCoursePostTest(LiveServerTestCase):
         type_box.send_keys("0")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -630,7 +630,7 @@ class PostCoursePostTest(LiveServerTestCase):
         password_box.send_keys("hhhh2333")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 
@@ -656,7 +656,7 @@ class PostCoursePostTest(LiveServerTestCase):
         type_box.send_keys("")
 
         time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('#btn btn-success form_button')
+        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
 

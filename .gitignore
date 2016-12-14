@@ -4,3 +4,5 @@ __pycache__/
 migrations/
 media/
 .idea/
+*.png
+ghostdriver.log
