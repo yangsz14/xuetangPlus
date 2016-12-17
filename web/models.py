@@ -42,9 +42,11 @@ class BBSPost(models.Model):
     P_LastComTime = models.DateTimeField(default=timezone.now)
     P_LikeNum = models.IntegerField(default=0)
     P_Section = models.IntegerField(default=1)
-    P_Parent = models.ForeignKey('self', blank=True, null=True)
+    P_Parent = models.ForeignKey('self', blank=True, null=True,related_name="child")
     P_ReplyNum = models.IntegerField(default=0)
     P_Top = models.IntegerField(default=0)
+    P_Wanted = models.IntegerField(default=0)
+    P_BestChild = models.ForeignKey('self',blank=True,default=None,null=True,related_name="parent")
 
     def __str__(self):
         return self.P_Title

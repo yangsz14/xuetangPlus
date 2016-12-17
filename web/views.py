@@ -28,6 +28,7 @@ gpb_amount = {
         'post': 100,
         'get_liked': 10,
         'reply': 20,
+        'wanted': 200,
     }
 
 type_dic = {
@@ -118,6 +119,7 @@ def validate_user(request,studentid,password):
             newUserSys = User.objects.create_user(username=studentid, password=password)
             newUserSys.save()
             newUserSys = auth.authenticate(username=studentid, password=password)
+            auth.login(request, newUserSys)
             newUser = BBSUser()
             newUser.U_studentid = studentid
             newUser.U_password = password
@@ -137,6 +139,29 @@ def validate_user(request,studentid,password):
     else:
         return None
 
+def validate_user_bymyself(request,studentid,password):
+    test_data = {'i_user': studentid, 'i_pass': password}
+    test_data_urlencode = urllib.parse.urlencode(test_data).encode("utf-8")
+    requrl = "https://id.tsinghua.edu.cn/do/off/ui/auth/login/post/fa8077873a7a80b1cd6b185d5a796617/0?/j_spring_security_thauth_roaming_entry"
+    req = urllib.request.Request(url=requrl, data=test_data_urlencode)
+    f = urllib.request.urlopen(req).read().decode('utf8')
+    if len(f) >= 2000:
+        users = BBSUser.objects.filter(U_studentid=studentid)
+        if len(users) == 0:
+            newUserSys = User.objects.create_user(username=studentid, password=password)
+            newUserSys.save()
+            newUserSys = auth.authenticate(username=studentid, password=password)
+            auth.login(request, newUserSys)
+            newUser = BBSUser()
+            newUser.U_studentid = studentid
+            newUser.U_password = password
+            newUser.user = newUserSys
+            newUser.save()
+            return newUser
+        else:
+            newUserSys = auth.authenticate(username=studentid, password=password)
+            auth.login(request, newUserSys)
+            return users[0]
 
 def login(request):
     # 这里有一个关于学号和id的小bug
@@ -145,7 +170,7 @@ def login(request):
     if request.method == 'POST':
         studentidin = request.POST['studentid']
         passwordin = request.POST['password']
-        user = validate_user(request,studentid=studentidin, password=passwordin)
+        user = validate_user_bymyself(request,studentid=studentidin, password=passwordin)
         if user is not None:
             return HttpResponseRedirect('/')
         else:
@@ -175,7 +200,7 @@ class CoursePostListView(ListView):
         myuser = BBSUser.objects.get(user=self.request.user)
         #print('myuser:', myuser)
 
-        posts = BBSPost.objects.filter(P_User=myuser, P_Course=mycourse,P_Parent=None)
+        posts = BBSPost.objects.filter(P_Course=mycourse,P_Parent=None)
         context['posts'] = posts
         context['course'] = mycourse
         context['user'] = myuser
@@ -259,7 +284,7 @@ def course_post_detail(request,courseid,postid):
         print(reply_get.P_Title)
         reply = BBSPost()
         reply.P_User = myuser
-        reply.P_Title = reply_get.P_Title
+        reply.P_Title = '回复'
         reply.P_Content = reply_get.P_Content
         reply.P_Course = thiscourse
         reply.P_Type = type_dic['回答贴']
@@ -269,7 +294,18 @@ def course_post_detail(request,courseid,postid):
         myuser.save()
         form = ReplyForm(params,instance=None)
 
-    childrenposts = BBSPost.objects.filter(P_Parent=bigpost)
+    childrenpostsq = BBSPost.objects.filter(P_Parent=bigpost)
+    childrenposts=[]
+    bestchild = None
+    for child in childrenpostsq:
+        if child != bigpost.P_BestChild:
+            childrenposts.append(child)
+        else :
+            bestchild = child
+    if bestchild != None:
+        childrenposts.append(bestchild)
+    childrenposts.reverse()
+
     likefilter = UserLikePost.objects.filter(UserID=myuser, PostID=bigpost)
     islike = 0
     if len(likefilter) != 0:
@@ -316,22 +352,23 @@ def like_post_deal(request):
 
     return HttpResponse('follow success')
 
+@csrf_exempt
 def post_course_post(request,courseid):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     course = BBSCourse.objects.get(id=courseid)
     courses = get_courses(request.user)
     if request.method == 'POST':
+        print(request.POST)
         title = request.POST['P_Title'] if request.POST['P_Title'] else ""
         content = request.POST['P_Content'] if request.POST['P_Content'] else ""
-        type = request.POST['P_Type'] if request.POST['P_Type'] else 0
-
+        wantedvalue = request.POST['wantedval'] if request.POST['wantedval'] else 0
+        realtype = request.POST['Realtype'] if request.POST['Realtype'] else 0
         if not title:
-            return render(request,'web/post_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content,'P_Type':type,'course':course, 'courses':courses})
+            return render(request,'web/post_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content,'course':course, 'courses':courses})
         if not content:
-            return render(request,'web/post_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content,'P_Type':type,'course':course, 'courses':courses})
-        if not type:
-            return render(request,'web/post_post.html',{'error':'请选择帖子类别','P_Title': title,'P_Content': content,'P_Type': type,'course':course, 'courses':courses})
+            return render(request,'web/post_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content,'course':course, 'courses':courses})
+
 
         userme = BBSUser.objects.get(user=request.user)
 
@@ -340,9 +377,10 @@ def post_course_post(request,courseid):
         post.P_Title = title
         post.P_Content = content
         post.P_Course = course
-        post.P_Type = type
+        post.P_Type = realtype
+        post.P_Wanted = wantedvalue
         post.save()
-        userme.U_GPB += gpb_amount['post']#暂时立即数
+        userme.U_GPB += gpb_amount['post']
         userme.save()
         return HttpResponseRedirect(reverse('course',args=[courseid]))
     return render(request, 'web/post_post.html', {'course':course, 'courses':courses})
@@ -421,12 +459,106 @@ def post_xuetang_post_detail(request,source):
 def xuetang_notice(request,source):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
+    myuser = BBSUser.objects.get(user=request.user)
     bestposts = BBSPost.objects.filter(P_Parent=None, P_Type=type_dic['大讨论区'],P_Section=sec_dic[source])
     bestposts = list(bestposts)
     bestposts = sorted(bestposts, key=lambda x: x.P_Time, reverse=True)
     posts = bestposts
     courses = get_courses(request.user)
-    return render(request, 'web/xuetang_list.html', {'posts': posts,'title':title_dic[source],'source':source,'courses':courses})
+    return render(request, 'web/xuetang_list.html', {'user':myuser,'posts': posts,'title':title_dic[source],'source':source,'courses':courses})
+
+def delete_post(request,courseid,postid,parentid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    postde = BBSPost.objects.get(id=postid)
+    likes = UserLikePost.objects.filter(PostID=postde)
+    follows = UserFollowPost.objects.filter(PostID=postde)
+    for like in likes:
+        like.delete()
+    for follow in follows:
+        follow.delete()
+    postde.delete()
+    myuser = BBSUser.objects.get(user=request.user)
+    myuser.U_GPB -= gpb_amount['reply']
+    myuser.save()
+    return HttpResponseRedirect("/course/"+str(courseid)+"/post/"+str(parentid)+"/")
+
+def delete_bigpost(request,courseid,postid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    postde = BBSPost.objects.get(id=postid)
+    likes = UserLikePost.objects.filter(PostID=postde)
+    follows = UserFollowPost.objects.filter(PostID=postde)
+    for like in likes:
+        like.delete()
+    for follow in follows:
+        follow.delete()
+    postde.delete()
+    myuser = BBSUser.objects.get(user=request.user)
+    myuser.U_GPB -= gpb_amount['post']
+    myuser.save()
+    return HttpResponseRedirect("/course/" + str(courseid) + "/")
+
+def delete_xuetang_post(request,parentid,source,postid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    postde = BBSPost.objects.get(id=postid)
+    likes = UserLikePost.objects.filter(PostID=postde)
+    follows = UserFollowPost.objects.filter(PostID=postde)
+    for like in likes:
+        like.delete()
+    for follow in follows:
+        follow.delete()
+    postde.delete()
+    myuser = BBSUser.objects.get(user=request.user)
+    myuser.U_GPB -= gpb_amount['reply']
+    myuser.save()
+    return HttpResponseRedirect("/xpostdetail/"+str(parentid)+"/"+source+"/")
+
+def delete_xuetang_bigpost(request,source,postid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    postde = BBSPost.objects.get(id=postid)
+    likes = UserLikePost.objects.filter(PostID=postde)
+    follows = UserFollowPost.objects.filter(PostID=postde)
+    for like in likes:
+        like.delete()
+    for follow in follows:
+        follow.delete()
+    postde.delete()
+    myuser = BBSUser.objects.get(user=request.user)
+    myuser.U_GPB -= gpb_amount['post']
+    myuser.save()
+    return HttpResponseRedirect("/"+source+"/")
+
+def logout(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    if request.user.is_authenticated():
+        auth.logout(request)
+        return HttpResponseRedirect('/login/')
+    else:
+        return HttpResponseRedirect('/login/')
+
+@csrf_exempt
+def good_post(request,courseid,bigpostid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    if request.method == 'POST':
+        goodpostid = int(request.POST['postID'])
+        parentid = int(request.POST['parentID'])
+        goodpost = BBSPost.objects.get(id=goodpostid)
+        parent = BBSPost.objects.get(id=parentid)
+        if parent.P_BestChild != None:
+            parent.P_BestChild.P_User.U_GPB -= parent.P_Wanted
+            parent.P_BestChild.P_User.save()
+        parent.P_BestChild = goodpost
+        print("good:",goodpost.P_Content)
+        parent.save()
+        goodpost.P_User.U_GPB += parent.P_Wanted
+        goodpost.P_User.save()
+    return HttpResponseRedirect("/course/"+courseid+"/post/"+bigpostid+"/")
+
 
 
 

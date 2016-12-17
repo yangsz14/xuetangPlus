@@ -26,9 +26,15 @@
             {% elif post.P_Type == 2%}
                 <div class="cat info">类别：笔记贴</div>
             {% endif %}
+            {% if post.P_Type == 1%}
+                <div class="cat info">悬赏：{{ post.P_Wanted }}</div>
+            {% endif %}
             <div class="good info">点赞数：{{ post.P_LikeNum}}</div>
             <div class="pull-right">
             <button class="btn blue"><a href="/course/{{ course.id }}/post/{{ post.id }}">详情</a></button>
+                {% if post.P_User == user%}
+                <button id="{{ post.id }}" class="save-btn-default btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" onclick="javascript:deletepost(this)">删除</button>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -39,4 +45,45 @@
 
 </ul>
 <a class="fatie" href="/post/{{ course.id }}"><img src="{{BASE_DIR}}/static/123.png" width="100px" height="100px"></a>
+
+    <!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close"
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+               确认
+            </h4>
+         </div>
+         <div class="modal-body">
+
+              删除
+
+         </div>
+         <div class="modal-footer">
+
+             <a id="deleteid" href="/">确认删除</a>
+            <button type="button" class="btn btn-default"
+               data-dismiss="modal">取消
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div>
+
+    <script type="text/javascript">
+
+    function deletepost(obj){
+        idstr = obj.id
+        deletedom = document.getElementById("deleteid")
+        cid = {{ course.id }}
+        restr = "/course/"+cid+"/delete_post/"+idstr+"/"
+        deletedom.setAttribute("href",restr)
+    }
+    </script>
 {% endblock %}
