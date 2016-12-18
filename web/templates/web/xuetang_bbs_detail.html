@@ -17,7 +17,7 @@
             <img class="image" src="{{BASE_DIR}}/media/{{bigpost.P_User.U_Image}}"/>
             </div>
             <div class="info">昵称：{{ bigpost.P_User.U_name}}</div>
-            <div class="info">称号：邯郸学步</div>
+            <div class="info">称号：{{ bigpost.P_User.U_Honor}}</div>
         </div>
         <div class="col-xs-8 item">
             <div class="name">{{ bigpost.P_Title }}</div>
@@ -49,7 +49,7 @@
             <img class="image" src="{{BASE_DIR}}/media/{{post.P_User.U_Image}}"/>
             </div>
             <div class="info">昵称：{{ post.P_User.U_name}}</div>
-            <div class="info">称号：邯郸学步</div>
+            <div class="info">称号：{{ post.P_User.U_Honor}}</div>
         </div>
         <div class="col-xs-8 item">
             <div class="name">{{ post.P_Title }}</div>

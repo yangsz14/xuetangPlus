@@ -14,7 +14,7 @@
             <img class="image" src="{{BASE_DIR}}/media/{{post.P_User.U_Image}}"/>
             </div>
             <div class="info">昵称：{{ post.P_User.U_name}}</div>
-            <div class="info">称号：邯郸学步</div>
+            <div class="info">称号：{{ post.P_User.U_Honor}}</div>
         </div>
         <div class="col-xs-8 item">
             <div class="name">{{ post.P_Title }}</div>
@@ -41,8 +41,12 @@
 {% endfor %}
 
 </ul>
+    {% if user.U_Identity == 2 and source == "notice"%}
 <a class="fatie" href="/postxpostdetail/{{ source }}/"><img src="{{BASE_DIR}}/static/123.png" width="100px" height="100px"></a>
-
+    {% endif %}
+    {% if source != "notice"%}
+<a class="fatie" href="/postxpostdetail/{{ source }}/"><img src="{{BASE_DIR}}/static/123.png" width="100px" height="100px"></a>
+    {% endif %}
 
     <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog"

@@ -67,6 +67,30 @@ title_dic = {
     'freeselection':"任选大讨论",
 }
 
+
+
+def raiseLevel(myuser):
+    curlevel = myuser.U_Level
+    curgpb = myuser.U_GPB
+    thislevelgpb = curlevel*20
+    while curgpb >= thislevelgpb:
+        myuser.U_Level = myuser.U_Level + 1
+        myuser.save()
+        thislevelgpb = (myuser.U_Level)*20
+    if myuser.U_Level <= 20:
+        myuser.U_Honor = "不起眼女主"
+    elif myuser.U_Level > 20 and myuser.U_Level <= 40:
+        myuser.U_Honor = "咕咕咕"
+    elif myuser.U_Level > 40 and myuser.U_Level <= 60:
+        myuser.U_Honor = "伊豆的舞女"
+    elif myuser.U_Level > 60 and myuser.U_Level <= 80:
+        myuser.U_Honor = "清华鸽王"
+    elif myuser.U_Level > 80 and myuser.U_Level <= 100:
+        myuser.U_Honor = "学堂学家"
+    elif myuser.U_Level > 100:
+        myuser.U_Honor = "超絶かわいい"
+    myuser.save()
+
 def get_courses(user):
     myuser = BBSUser.objects.get(user=user)
     relas = UserHasCourse.objects.filter(UserID=myuser);
@@ -291,6 +315,7 @@ def course_post_detail(request,courseid,postid):
         reply.P_Parent = bigpost
         reply.save()
         myuser.U_GPB += gpb_amount['reply']
+        raiseLevel(myuser)
         myuser.save()
         form = ReplyForm(params,instance=None)
 
@@ -348,6 +373,7 @@ def like_post_deal(request):
         post.P_LikeNum += 1
         post.save()
         postuser.U_GPB += gpb_amount['get_liked']
+        raiseLevel(postuser)
         postuser.save()
 
     return HttpResponse('follow success')
@@ -381,6 +407,7 @@ def post_course_post(request,courseid):
         post.P_Wanted = wantedvalue
         post.save()
         userme.U_GPB += gpb_amount['post']
+        raiseLevel(userme)
         userme.save()
         return HttpResponseRedirect(reverse('course',args=[courseid]))
     return render(request, 'web/post_post.html', {'course':course, 'courses':courses})
@@ -407,6 +434,7 @@ def xuetang_post_detail(request,postid,source):
         reply.P_Parent = bigpost
         reply.save()
         myuser.U_GPB += gpb_amount['reply']
+        raiseLevel(myuser)
         myuser.save()
         form = ReplyForm(params, instance=None)
 
@@ -451,6 +479,7 @@ def post_xuetang_post_detail(request,source):
         post.P_Section = sec_dic[source]
         post.save()
         userme.U_GPB += gpb_amount['post']
+        raiseLevel(userme)
         userme.save()
         return HttpResponseRedirect("/"+source+"/")
 
@@ -550,13 +579,24 @@ def good_post(request,courseid,bigpostid):
         goodpost = BBSPost.objects.get(id=goodpostid)
         parent = BBSPost.objects.get(id=parentid)
         if parent.P_BestChild != None:
-            parent.P_BestChild.P_User.U_GPB -= parent.P_Wanted
-            parent.P_BestChild.P_User.save()
+            if parent.P_BestChild == goodpost:
+                parent.P_BestChild.P_User.U_GPB -= parent.P_Wanted
+                parent.P_BestChild.P_User.save()
+                parent.P_BestChild = None
+                parent.save()
+                return HttpResponseRedirect("/course/"+courseid+"/post/"+bigpostid+"/")
+            else:
+                parent.P_BestChild.P_User.U_GPB -= parent.P_Wanted
+                parent.P_BestChild.P_User.save()
         parent.P_BestChild = goodpost
-        print("good:",goodpost.P_Content)
+        #print("good:",goodpost.P_Content)
         parent.save()
         goodpost.P_User.U_GPB += parent.P_Wanted
+        raiseLevel(goodpost.P_User)
         goodpost.P_User.save()
+        parent.P_User.U_GPB -= parent.P_Wanted
+        parent.P_User.save()
+        return HttpResponseRedirect("/course/" + courseid + "/post/" + bigpostid + "/")
     return HttpResponseRedirect("/course/"+courseid+"/post/"+bigpostid+"/")
 
 

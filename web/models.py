@@ -9,6 +9,7 @@ class BBSUser(models.Model):
     U_password = models.CharField(max_length=100)
     U_name = models.CharField(blank=True,max_length=50)
     U_RealName = models.CharField(blank=True,max_length=50)
+    U_Honor = models.CharField(blank=True, max_length=50)
     U_Major = models.TextField(blank=True)
     U_Description = models.TextField(null=True, blank=True)
     U_Image = models.ImageField(null=True, blank=True)

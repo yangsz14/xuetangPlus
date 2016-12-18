@@ -17,7 +17,7 @@
             <img class="image" src="{{BASE_DIR}}/media/{{bigpost.P_User.U_Image}}"/>
             </div>
             <div class="info">昵称：{{ bigpost.P_User.U_name}}</div>
-            <div class="info">称号：邯郸学步</div>
+            <div class="info">称号：{{ bigpost.P_User.U_Honor}}</div>
         </div>
         <div class="col-xs-8 item">
             <div class="name">{{ bigpost.P_Title }}</div>
@@ -52,7 +52,7 @@
             <img class="image" src="{{BASE_DIR}}/media/{{post.P_User.U_Image}}"/>
             </div>
             <div class="info">昵称：{{ post.P_User.U_name}}</div>
-            <div class="info">称号：邯郸学步</div>
+            <div class="info">称号：{{ post.P_User.U_Honor}}</div>
         </div>
         <div class="col-xs-8 item">
             <div class="name">{{ post.P_Title }}</div>
@@ -71,10 +71,10 @@
             {% endif %}
 
             {% if bigpost.P_Type == 1 and bigpost.P_User == user and bigpost.P_BestChild != post%}
-                <button id="{{ post.id }}d" onclick="javescript:goodpost(this)">采纳</button>
+                <input id="{{ post.id }}d" type="button" class="btn btn-default likeBtn blue mybutton" value="采纳" onclick="javescript:goodpost(this)">
             {% endif %}
-            {% if bigpost.P_Type == 1 and bigpost.P_BestChild == post %}
-                <div class="cat info">已采纳</div>
+            {% if bigpost.P_Type == 1 and bigpost.P_User == user and bigpost.P_BestChild == post %}
+                <input id="{{ post.id }}d" type="button" class="btn btn-default likeBtn blue mybutton" value="取消" onclick="javescript:goodpost(this)">
             {% endif %}
         </div>
     </div>
@@ -169,6 +169,12 @@
             type: 'POST',
             data: {'postID': idstr,'parentID':bid},
             success: function() {
+                if (obj.value == '取消') {
+                    obj.value = '采纳';
+                }
+                else {
+                    obj.value = '采纳';
+                }
                 window.location.href="/course/"+cid+"/post/"+bid+"/"
             }
         })
