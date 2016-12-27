@@ -8,3 +8,4 @@ settings.py
 *.png
 ghostdriver.log
 views_ysz.py
+*.xlsx

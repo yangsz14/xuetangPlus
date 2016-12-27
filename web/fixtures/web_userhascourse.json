@@ -3,98 +3,98 @@
 "model": "web.UserHasCourse",
   "pk":1,
 "fields": {
-    "CourseID":1,
-"UserID":1
+    HID_id":1,
+"UserID_id":1
 }},
 {
 "model": "web.UserHasCourse",
   "pk":2,
 "fields": {
-    "CourseID":2,
-"UserID":1
+    "CourseID_id":2,
+"UserID_id":1
 }},
 {
 "model": "web.UserHasCourse",
   "pk":3,
 "fields": {
-    "CourseID":3,
-"UserID":1
+    "CourseID_id":3,
+"UserID_id":1
 }},
 {
 "model": "web.UserHasCourse",
   "pk":4,
 "fields": {
-    "CourseID":4,
-"UserID":1
+    "CourseID_id":4,
+"UserID_id":1
 }},
 {
 "model": "web.UserHasCourse",
   "pk":5,
 "fields": {
-    "CourseID":5,
-"UserID":1
+    "CourseID_id":5,
+"UserID_id":1
 }},
 {
 "model": "web.UserHasCourse",
   "pk":6,
 "fields": {
-    "CourseID":6,
-"UserID":2
+    "CourseID_id":6,
+"UserID_id":2
 }},
 {
 "model": "web.UserHasCourse",
   "pk":7,
 "fields": {
-    "CourseID":7,
-"UserID":2
+    "CourseID_id":7,
+"UserID_id":2
 }},
 {
 "model": "web.UserHasCourse",
   "pk":8,
 "fields": {
-    "CourseID":8,
-"UserID":2
+    "CourseID_id":8,
+"UserID_id":2
 }},
 {
 "model": "web.UserHasCourse",
   "pk":9,
 "fields": {
-    "CourseID":9,
-"UserID":2
+    "CourseID_id":9,
+"UserID_id":2
 }},
 {
 "model": "web.UserHasCourse",
   "pk":10,
 "fields": {
-    "CourseID":10,
-"UserID":2
+    "CourseID_id":10,
+"UserID_id":2
 }},
 {
 "model": "web.UserHasCourse",
   "pk":11,
 "fields": {
-    "CourseID":2,
-"UserID":2
+    "CourseID_id":2,
+"UserID_id":2
 }},
 {
 "model": "web.UserHasCourse",
   "pk":12,
 "fields": {
-    "CourseID":3,
-"UserID":2
+    "CourseID_id":3,
+"UserID_id":2
 }},
 {
 "model": "web.UserHasCourse",
   "pk":13,
 "fields": {
-    "CourseID":4,
-"UserID":2
+    "CourseID_id":4,
+"UserID_id":2
 }},
 {
 "model": "web.UserHasCourse",
   "pk":14,
 "fields": {
-    "CourseID":5,
-"UserID":2
+    "CourseID_id":5,
+"UserID_id":2
 }}
 ]

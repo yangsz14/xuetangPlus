@@ -1,0 +1,118 @@
+{
+"RECORDS":[
+{
+"id":1,
+"app":"contenttypes",
+"name":"0001_initial",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":2,
+"app":"auth",
+"name":"0001_initial",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":3,
+"app":"admin",
+"name":"0001_initial",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":4,
+"app":"admin",
+"name":"0002_logentry_remove_auto_add",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":5,
+"app":"contenttypes",
+"name":"0002_remove_content_type_name",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":6,
+"app":"auth",
+"name":"0002_alter_permission_name_max_length",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":7,
+"app":"auth",
+"name":"0003_alter_user_email_max_length",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":8,
+"app":"auth",
+"name":"0004_alter_user_username_opts",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":9,
+"app":"auth",
+"name":"0005_alter_user_last_login_null",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":10,
+"app":"auth",
+"name":"0006_require_contenttypes_0002",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":11,
+"app":"auth",
+"name":"0007_alter_validators_add_error_messages",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":12,
+"app":"auth",
+"name":"0008_alter_user_username_max_length",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":13,
+"app":"sessions",
+"name":"0001_initial",
+"applied":"2016-12-7 17:02:48"
+},
+{
+"id":14,
+"app":"web",
+"name":"0001_initial",
+"applied":"2016-12-7 17:02:49"
+},
+{
+"id":15,
+"app":"web",
+"name":"0002_bbspost_p_wanted",
+"applied":"2016-12-17 16:10:50"
+},
+{
+"id":16,
+"app":"web",
+"name":"0003_auto_20161218_0159",
+"applied":"2016-12-17 17:59:19"
+},
+{
+"id":17,
+"app":"web",
+"name":"0004_bbsuser_u_honor",
+"applied":"2016-12-18 16:55:36"
+},
+{
+"id":18,
+"app":"web",
+"name":"0005_userhasnode",
+"applied":"2016-12-27 08:19:57"
+},
+{
+"id":19,
+"app":"web",
+"name":"0006_bbspost_p_level",
+"applied":"2016-12-27 11:32:52"
+}
+]
+}
