@@ -30,7 +30,16 @@ gpb_amount = {
         'get_liked': 10,
         'reply': 20,
         'wanted': 200,
+        'normal': 1000,
+        'ten': 10000,
+        'gold': 20000,
     }
+
+draw_amount = {
+    0:1000,
+    1:10000,
+    2:20000,
+}
 
 type_dic = {
     '普通贴':0,
@@ -77,6 +86,12 @@ level_dic = {
 prop_dic = {
     'UR':1,
     'SR':15
+}
+
+mode_dic = {
+    '单抽':0,
+    '十连':1,
+    '黄金抽卡':2
 }
 
 
@@ -228,7 +243,7 @@ class CoursePostListView(ListView):
         mycourse = BBSCourse.objects.get(id=courseid)
         #print('mycourse:', mycourse)
         #print('myuser:', self.request.user)
-
+        hasnotes = 0
         if not self.request.user.is_authenticated():
             return HttpResponseRedirect('/login/')
 
@@ -237,11 +252,29 @@ class CoursePostListView(ListView):
         #print('myuser:', myuser)
 
         posts = BBSPost.objects.filter(P_Course=mycourse,P_Parent=None)
-        context['posts'] = posts
+
+        allnotes = BBSPost.objects.filter(P_Course=mycourse, P_Type=type_dic['笔记贴'])
+        if len(allnotes) != 0:
+            hasnotes = 1
+        mynotesrelas = UserHasNode.objects.filter(UserID=myuser)
+        mynotes = []
+        posts = list(posts)
+
+        for mynotesrela in mynotesrelas:
+            mynotes.append(mynotesrela.PostID)
+        newposts = []
+        for post in posts:
+            if post.P_Type == type_dic['笔记贴'] and (post not in mynotes):
+               continue
+            newposts.append(post)
+
+
+        context['posts'] = newposts
         context['course'] = mycourse
         context['user'] = myuser
         courses = get_courses(self.request.user)
         context['courses'] = courses
+        context['hasnotes'] = hasnotes
         return context
 
 # class CoursePostDetailView(ListView):
@@ -307,8 +340,11 @@ def course_post_detail(request,courseid,postid):
     thiscourse = BBSCourse.objects.get(id=courseid)
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
+
     myuser = BBSUser.objects.get(user=request.user)
     bigpost = BBSPost.objects.get(id=postid, P_Course=thiscourse)
+    if bigpost.P_Type == type_dic['笔记贴'] and len(UserHasNode.objects.filter(UserID=myuser,PostID=bigpost))==0:
+        return HttpResponseRedirect('/login/')
 
     params = request.POST if request.method == 'POST' else None
 
@@ -499,6 +535,7 @@ def xuetang_notice(request,source):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     myuser = BBSUser.objects.get(user=request.user)
+    print("KeyError",type_dic['大讨论区'],sec_dic[source])
     bestposts = BBSPost.objects.filter(P_Parent=None, P_Type=type_dic['大讨论区'],P_Section=sec_dic[source])
     bestposts = list(bestposts)
     bestposts = sorted(bestposts, key=lambda x: x.P_Time, reverse=True)
@@ -609,36 +646,40 @@ def good_post(request,courseid,bigpostid):
         return HttpResponseRedirect("/course/" + courseid + "/post/" + bigpostid + "/")
     return HttpResponseRedirect("/course/"+courseid+"/post/"+bigpostid+"/")
 
-def draw_node(request,courseid):
+def draw_note(request,courseid,modeid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     courses = get_courses(request.user)
     course = BBSCourse.objects.get(id=courseid)
     myuser = BBSUser.objects.get(user=request.user)
     allnotes = BBSPost.objects.filter(P_Course=course,P_Type=type_dic['笔记贴'])
-    if allnotes == []:
-        return render(request,"web/course_drawing.html",{'user':myuser,'courses':courses,'course':course,'hasnote':0})
-    return render(request, "web/course_drawing.html", {'user': myuser, 'courses': courses, 'course': course, 'hasnote': 1})
 
-def get_result(request,courseid):
-    courses = get_courses(request.user)
-    course = BBSCourse.objects.get(id=courseid)
-    myuser = BBSUser.objects.get(user=request.user)
-    noterand = random.randint(1,100)
+    if allnotes == []:
+        return render(request,"web/course_drawing.html",{'user':myuser,'courses':courses,'course':course,'iserror':1,'modeid':modeid,'error':"没有笔记贴可抽！"})
+    if myuser.U_GPB < draw_amount[int(modeid)]:
+        return render(request, "web/course_drawing.html",
+                      {'user': myuser, 'courses': courses, 'course': course, 'iserror': 1, 'modeid': modeid,
+                       'error': "GPB不够哦！"})
+    return render(request, "web/course_drawing.html", {'user': myuser, 'courses': courses, 'course': course, 'iserror': 0,'modeid':modeid})
+
+def draw_one(course):
+    noterand = random.randint(1, 100)
     allnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'])
     getnote = None
     if noterand >= 1 and noterand <= prop_dic['UR']:
         urnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['UR'])
         if len(urnotes) == 0:
-            noterand = random.randint(prop_dic['UR']+1,100)
+            noterand = random.randint(prop_dic['UR'] + 1, 100)
         else:
-            siterand = random.randint(0,len(urnotes)-1)
+            siterand = random.randint(0, len(urnotes) - 1)
             print("UR", len(urnotes), siterand)
             getnote = urnotes[siterand]
-    if noterand >= prop_dic['UR']+1 and noterand <= prop_dic['UR']+prop_dic['SR']:
+    if noterand >= prop_dic['UR'] + 1 and noterand <= prop_dic['UR'] + prop_dic['SR']:
         srnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['SR'])
         if len(srnotes) == 0:
-            noterand = random.randint(prop_dic['UR']+prop_dic['SR']+1,100)
+            noterand = random.randint(prop_dic['UR'] + prop_dic['SR'] + 1, 100)
         else:
-            siterand = random.randint(0,len(srnotes)-1)
+            siterand = random.randint(0, len(srnotes) - 1)
             print("SR", len(srnotes), siterand)
             getnote = srnotes[siterand]
     if noterand >= prop_dic['UR'] + prop_dic['SR'] + 1:
@@ -646,16 +687,156 @@ def get_result(request,courseid):
         if len(rnotes) == 0:
             getnote = allnotes[0]
         else:
-            siterand = random.randint(0,len(rnotes)-1)
+            siterand = random.randint(0, len(rnotes) - 1)
             print("R", len(rnotes), siterand)
             getnote = rnotes[siterand]
+    return getnote
+
+def draw_good(course):
+    noterand = random.randint(1, prop_dic['UR'] + prop_dic['SR'])
+    allnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'])
+    urnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['UR'])
+    srnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['SR'])
+    if len(urnotes) == 0 or len(srnotes) == 0:
+        return None
+    getnote = None
+    if noterand >= 1 and noterand <= prop_dic['UR']:
+        if len(urnotes) == 0:
+            noterand = random.randint(prop_dic['UR'] + 1, prop_dic['UR'] + prop_dic['SR'])
+        else:
+            siterand = random.randint(0, len(urnotes) - 1)
+            getnote = urnotes[siterand]
+    if noterand >= prop_dic['UR'] + 1 and noterand <= prop_dic['UR'] + prop_dic['SR']:
+        if len(srnotes) == 0:
+            getnote = urnotes[0]
+        else:
+            siterand = random.randint(0, len(srnotes) - 1)
+            getnote = srnotes[siterand]
+    return getnote
+
+def draw_10(course):
+    getnotes=[]
+    insertrand = random.randint(0,9)
+    for i in range(0,10):
+        if i == insertrand:
+            getnotegood = draw_good(course)
+            if getnotegood == None:
+                i -=1
+                continue
+            getnotes.append(getnotegood)
+            continue
+        getnote = draw_one(course)
+        getnotes.append(getnote)
+    return getnotes
+
+
+def get_result(request,courseid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    courses = get_courses(request.user)
+    course = BBSCourse.objects.get(id=courseid)
+    myuser = BBSUser.objects.get(user=request.user)
+    myuser.U_GPB -= gpb_amount['normal']
+    myuser.save()
+    getnote = draw_one(course)
+    if len(UserHasNode.objects.filter(UserID=myuser,PostID=getnote)) == 0:
+        userhasnote = UserHasNode(UserID=myuser,PostID=getnote)
+        userhasnote.save()
     posts = [getnote]
     context={}
     context['posts'] = posts
     context['course'] = course
     context['user'] = myuser
     context['courses'] = courses
+    context['hasnotes'] = 1
     return render(request, 'web/course_bbs_list.html', context)
+
+def get_result10(request,courseid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    courses = get_courses(request.user)
+    course = BBSCourse.objects.get(id=courseid)
+    myuser = BBSUser.objects.get(user=request.user)
+    myuser.U_GPB -= gpb_amount['ten']
+    myuser.save()
+    getnotes = draw_10(course)
+    for getnote in getnotes:
+        if len(UserHasNode.objects.filter(UserID=myuser, PostID=getnote)) == 0:
+            userhasnote = UserHasNode(UserID=myuser, PostID=getnote)
+            userhasnote.save()
+    posts = getnotes
+    context={}
+    context['posts'] = posts
+    context['course'] = course
+    context['user'] = myuser
+    context['courses'] = courses
+    context['hasnotes'] = 1
+    return render(request, 'web/course_bbs_list.html', context)
+
+def get_resultgood(request,courseid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    courses = get_courses(request.user)
+    course = BBSCourse.objects.get(id=courseid)
+    myuser = BBSUser.objects.get(user=request.user)
+    myuser.U_GPB -= gpb_amount['gold']
+    myuser.save()
+    getnote = draw_good(course)
+    if len(UserHasNode.objects.filter(UserID=myuser,PostID=getnote)) == 0:
+        userhasnote = UserHasNode(UserID=myuser,PostID=getnote)
+        userhasnote.save()
+    posts = [getnote]
+    context={}
+    context['posts'] = posts
+    context['course'] = course
+    context['user'] = myuser
+    context['courses'] = courses
+    context['hasnotes'] = 1
+    return render(request, 'web/course_bbs_list.html', context)
+
+def user_self_like(request,userid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    myuser = BBSUser.objects.get(user=request.user)
+    courses = get_courses(request.user)
+    thisuser = BBSUser.objects.get(id=userid)
+    thisrelas = UserLikePost.objects.filter(UserID=thisuser)
+    thisposts = []
+    for thisrela in thisrelas:
+        if thisrela.PostID.P_Course not in courses:
+            continue
+        thisposts.append(thisrela.PostID)
+    return render(request,'web/search_list.html',{'courses':courses,'posts':thisposts,'info':"点赞"})
+
+def user_self_ask(request,userid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    myuser = BBSUser.objects.get(user=request.user)
+    courses = get_courses(request.user)
+    thisuser = BBSUser.objects.get(id=userid)
+    hisposts = BBSPost.objects.filter(P_User = thisuser,P_Type = type_dic['提问贴'])
+    thisposts = []
+    for hispost in hisposts:
+        if hispost.P_Course not in courses:
+            continue
+        thisposts.append(hispost)
+    return render(request,'web/search_list.html',{'courses':courses,'posts':thisposts,'info':"提问"})
+
+def user_self_answer(request,userid):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    myuser = BBSUser.objects.get(user=request.user)
+    courses = get_courses(request.user)
+    thisuser = BBSUser.objects.get(id=userid)
+    hisposts = BBSPost.objects.filter(P_User = thisuser,P_Type = type_dic['回答贴'])
+    thisposts = []
+    for hispost in hisposts:
+        if hispost.P_Course not in courses:
+            continue
+        thisposts.append(hispost.P_Parent)
+    return render(request,'web/search_list.html',{'courses':courses,'posts':thisposts,'info':"回答"})
+
+
 
 
 

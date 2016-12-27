@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+    <h1>{{ title }}</h1>
+    <h1>{{ info }}</h1>
+<ul>
+
+{% for post in posts %}
+    <div class="container">
+    <div class="row">
+        <div class="col-xs-4 item">
+            <div>
+            <img class="image" src="{{BASE_DIR}}/media/{{post.P_User.U_Image}}"/>
+            </div>
+            <div class="info">昵称：{{ post.P_User.U_name}}</div>
+            <div class="info">称号：{{ post.P_User.U_Honor}}</div>
+        </div>
+        <div class="col-xs-8 item">
+            <div class="name">{{ post.P_Title }}</div>
+            <div class="content">{{ post.P_Content}}</div>
+            {% if post.P_Type == 0 %}
+                <div class="cat info">类别：普通贴</div>
+            {% elif post.P_Type == 1%}
+                <div class="cat info">类别：提问贴</div>
+            {% elif post.P_Type == 2%}
+                <div class="cat info">类别：笔记贴</div>
+            {% endif %}
+            <div class="good info">点赞数：{{ post.P_LikeNum}}</div>
+            <div class="pull-right">
+                {% if post.P_Type <= 3 %}
+            <button class="btn blue"><a href="/course/{{ post.P_Course.id }}/post/{{ post.id }}/">详情</a></button>
+                {% elif post.P_Section == 0 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/notice/">详情</a></button>
+                {% elif post.P_Section == 1 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/complaint/">详情</a></button>
+                {% elif post.P_Section == 2 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/chat/">详情</a></button>
+                {% elif post.P_Section == 3 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/science/">详情</a></button>
+                {% elif post.P_Section == 4 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/engineer/">详情</a></button>
+                {% elif post.P_Section == 5 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/pe/">详情</a></button>
+                {% elif post.P_Section == 6 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/politics/">详情</a></button>
+                {% elif post.P_Section == 7 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/culture/">详情</a></button>
+                {% elif post.P_Section == 8 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/english/">详情</a></button>
+                {% elif post.P_Section == 9 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/otherlan/">详情</a></button>
+                {% elif post.P_Section == 10 %}
+                <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/freeselection/">详情</a></button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+     </div>
+{% empty %}
+    <li>抱歉，目前还没有找到帖子。</li>
+{% endfor %}
+</ul>
+
+
+{% endblock %}

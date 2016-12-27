@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}-登录{% endblock %}
+{% block title %}学堂Plus{% endblock %}
 {% block content %}
 
     <h1>{{ user.U_RealName }}您的信息</h1>
@@ -14,9 +14,9 @@
         <div>GP币：{{ user.U_GPB }}</div>
         <div>签名：{{ user.U_Description }}</div>
         <button>我的关注：{{ user.U_FollowUserNum }}</button>
-        <button>我的点赞：{{ user.U_FollowPostNum }}</button>
-        <button>我的提问：{{ user.U_QuestionNum }}</button>
-        <button>我的回答：{{ user.U_AnswerNum }}</button>
+        <a href="/helikes/{{user.id}}/">我的点赞</a>
+        <a href="/heasks/{{user.id}}/">我的提问</a>
+        <a href="/heanswers/{{user.id}}/">我的回答</a>
     </li>
 
 {% endblock %}
