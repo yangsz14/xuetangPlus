@@ -654,7 +654,7 @@ def ajax_append_image(request):
     return HttpResponse(path)
 
 
-def draw_node(request,courseid):
+def draw_note(request,courseid,modeid):
     courses = get_courses(request.user)
     course = BBSCourse.objects.get(id=courseid)
     myuser = BBSUser.objects.get(user=request.user)
