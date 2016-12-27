@@ -609,6 +609,13 @@ def good_post(request,courseid,bigpostid):
         return HttpResponseRedirect("/course/" + courseid + "/post/" + bigpostid + "/")
     return HttpResponseRedirect("/course/"+courseid+"/post/"+bigpostid+"/")
 
+@csrf_exempt
+def ajax_append_image(request):
+    data = request.FILES['file']
+    path = default_storage.save(data.name, ContentFile(data.read()))
+    return HttpResponse(path)
+
+
 def draw_node(request,courseid):
     courses = get_courses(request.user)
     course = BBSCourse.objects.get(id=courseid)
@@ -656,7 +663,5 @@ def get_result(request,courseid):
     context['user'] = myuser
     context['courses'] = courses
     return render(request, 'web/course_bbs_list.html', context)
-
-
 
 
