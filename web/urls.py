@@ -17,8 +17,8 @@ urlpatterns = [
     url(r'^xpostdetail/(\d+)/(\w+)/delete_post/(\d+)/$',views.delete_xuetang_post),
     url(r'^(\w+)/delete_post/(\d+)/$',views.delete_xuetang_bigpost),
     url(r'^postxpostdetail/(\w+)/$',views.post_xuetang_post_detail),
+    url(r'^ajax_append_image/$', views.ajax_append_image),
     url(r'^(\w+)/$',views.xuetang_notice),
-
     #迭代一前请写一下用户修改个人信息的页面，麻烦了
     #迭代一前请写一下用户发帖的页面，麻烦了
 ]

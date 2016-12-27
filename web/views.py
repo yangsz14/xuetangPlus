@@ -599,6 +599,9 @@ def good_post(request,courseid,bigpostid):
         return HttpResponseRedirect("/course/" + courseid + "/post/" + bigpostid + "/")
     return HttpResponseRedirect("/course/"+courseid+"/post/"+bigpostid+"/")
 
-
-
+@csrf_exempt
+def ajax_append_image(request):
+    data = request.FILES['file']
+    path = default_storage.save(data.name, ContentFile(data.read()))
+    return HttpResponse(path)
 
