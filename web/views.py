@@ -646,9 +646,15 @@ def good_post(request,courseid,bigpostid):
         return HttpResponseRedirect("/course/" + courseid + "/post/" + bigpostid + "/")
     return HttpResponseRedirect("/course/"+courseid+"/post/"+bigpostid+"/")
 
-def draw_note(request,courseid,modeid):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/login/')
+
+@csrf_exempt
+def ajax_append_image(request):
+    data = request.FILES['file']
+    path = default_storage.save(data.name, ContentFile(data.read()))
+    return HttpResponse(path)
+
+
+def draw_node(request,courseid):
     courses = get_courses(request.user)
     course = BBSCourse.objects.get(id=courseid)
     myuser = BBSUser.objects.get(user=request.user)
@@ -835,8 +841,6 @@ def user_self_answer(request,userid):
             continue
         thisposts.append(hispost.P_Parent)
     return render(request,'web/search_list.html',{'courses':courses,'posts':thisposts,'info':"回答"})
-
-
 
 
 

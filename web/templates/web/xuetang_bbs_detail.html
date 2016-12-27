@@ -2,6 +2,10 @@
 
 {% block title %}学堂Plus{% endblock %}
 
+{% block js %}
+
+{% endblock %}
+
 {% block content %}
 
     <h1>{{ user.U_name }}帖子详情</h1>
@@ -21,7 +25,7 @@
         </div>
         <div class="col-xs-8 item">
             <div class="name">{{ bigpost.P_Title }}</div>
-            <div class="content">{{ bigpost.P_Content}}</div>
+            <div class="content" id="content_{{ bigpost.id }}">{{ bigpost.P_Content}}</div>
             {% if bigpost.P_Type == 0 %}
                 <div class="cat info">类别：普通贴</div>
             {% elif bigpost.P_Type == 1%}
@@ -53,7 +57,7 @@
         </div>
         <div class="col-xs-8 item">
             <div class="name">{{ post.P_Title }}</div>
-            <div class="content">{{ post.P_Content}}</div>
+            <div class="content" id="content_{{ post.id }}">{{ post.P_Content}}</div>
             {% if post.P_Type == 0 %}
                 <div class="cat info">类别：普通贴</div>
             {% elif post.P_Type == 1%}
@@ -75,15 +79,27 @@
 
 {% endfor %}
 
+{% if user.user.is_authenticated and not user.UForbidden%}
         <div style="text-align:left;font-size:20px;font-family:STKaiti;padding-top:15%" id="form_div_of_register">
-            <form method="post" action=".">
-              {% csrf_token %}
-              {{ form.as_p }}
 
-              <input type="submit" value="提交" />
-            </form>
+<div class="reply">
+	<hr>
+    <label class="btn btn-default mybutton blue" for="fileImage">上传图片</label>
+	<input id="fileImage" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
+	<form method="POST" class="post-form" action=".">
+		{% csrf_token %}
+		<p>
+            <label for="id_PContent">内容：</label>
+        </p>
+        <p>
+            <textarea cols="90%" id="id_PContent" name="P_Content" rows="10"></textarea>
+        </p>
+        <button type="submit" class="save btn btn-default blue mybutton">回复</button>
+	</form>
+</div>
+
         </div>
-
+{% endif %}
     <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
    aria-labelledby="myModalLabel" aria-hidden="true">
@@ -147,6 +163,75 @@
         restr = "/xpostdetail/"+bid+"/"+sourceid+"/delete_post/"+idstr+"/"
         deletedom.setAttribute("href",restr)
     }
+
+    function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    $(function () {
+        $('#fileImage').bind("change", function() {
+        if ($(this).prop('files')[0].type.indexOf("image") <= -1) {
+            alert("请选择图片！");
+            return;
+        }
+        var formdata = new FormData()
+        formdata.append("file",$(this).prop('files')[0])
+        console.log($(this).prop('files')[0]);
+        $.ajax({
+            url: "/ajax_append_image/",
+            type: "POST",
+            data: formdata,
+            processData: false,
+            contentType: false,
+            success: function(data, textStatus) {
+                $("#id_PContent").val($("#id_PContent").val() + "__url_start__" + data + "__url_end__")
+                alert("上传成功")
+            }
+        });
+    })
+
+    $(function () {
+        var s = '{{ bigpost.P_Content|safe }}'
+        p = s.match(/__url_start__(\S*?)__url_end__/)
+        while (!(p === null)) {
+            s = s.replace(p[0], "<img src='{{BASE_DIR}}/media/" + p[1] + "' />")
+            p = s.match(/__url_start__(\S*?)__url_end__/)
+            }
+        $('#content_{{ bigpost.id }}').html(s)
+        {% for post in childrenposts  %}
+            var s = '{{ post.P_Content|safe }}'
+            p = s.match(/__url_start__(\S*?)__url_end__/)
+            while (!(p === null)) {
+                s = s.replace(p[0], "<img src='{{BASE_DIR}}/media/" + p[1] + "' />")
+                p = s.match(/__url_start__(\S*?)__url_end__/)
+            }
+        $('#content_{{ post.id }}').html(s)
+        {% endfor %}
+        });
+    });
     </script>
 
 </ul>

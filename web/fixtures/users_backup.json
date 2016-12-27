@@ -1,0 +1,43 @@
+[{
+  "model": "web.BBSUser",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "U_studentid": "2014013460",
+    "U_password": "hhhh2333",
+    "U_name": "cwcwtwv",
+    "U_RealName": "yyn14",
+    "U_Major": "software",
+    "U_Description": "There is no description =.=",
+    "U_Image": "none",
+    "U_Identity": 0,
+    "U_Level": 7,
+    "U_GPB": 1234,
+    "U_FollowUserNum": 1,
+    "U_FollowPostNum": 10,
+    "U_PostNum": 100,
+    "U_QuestionNum": 1000,
+    "U_AnswerNum": 10000
+  }
+},{
+  "model": "web.BBSUser",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "U_studentid": "2014013466",
+    "U_password": "hhhh23333",
+    "U_name": "cwcwtwv",
+    "U_RealName": "yyn14",
+    "U_Major": "software",
+    "U_Description": "There is no description =.=",
+    "U_Image": "none",
+    "U_Identity": 0,
+    "U_Level": 7,
+    "U_GPB": 1234,
+    "U_FollowUserNum": 1,
+    "U_FollowPostNum": 10,
+    "U_PostNum": 100,
+    "U_QuestionNum": 1000,
+    "U_AnswerNum": 10000
+  }
+}]

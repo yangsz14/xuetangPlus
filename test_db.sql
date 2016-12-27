@@ -125,7 +125,11 @@ CREATE TABLE `auth_user` (
 
 LOCK TABLES `auth_user` WRITE;
 /*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
+<<<<<<< HEAD
 INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$30000$S0cR90YmjH7k$T63/dsDmSNJqkRMT8zbOypckY26s7+XnSZOzh2670Eo=','2016-12-27 12:00:48.444615',1,'zzq','','','',1,1,'2016-12-07 17:03:09.715683'),(2,'pbkdf2_sha256$30000$rOR4t35UrLE8$rGyNoVPWDysMMxNeJ6JoTEdTTRSz12aV6oy6QKlTCdk=','2016-12-20 04:47:45.020350',0,'2014013458','','','',0,1,'2016-12-07 17:03:19.799979'),(3,'pbkdf2_sha256$30000$sjpMmsxYG3lz$LbSrqvXeKf/0LKej3FfOogMCzErlSqH5YOSALrTg9mU=','2016-12-27 08:17:33.468394',0,'2014013449','','','',0,1,'2016-12-07 17:05:34.123448');
+=======
+INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$30000$S0cR90YmjH7k$T63/dsDmSNJqkRMT8zbOypckY26s7+XnSZOzh2670Eo=','2016-12-27 12:00:48.444615',1,'zzq','','','',1,1,'2016-12-07 17:03:09.715683'),(2,'pbkdf2_sha256$30000$rOR4t35UrLE8$rGyNoVPWDysMMxNeJ6JoTEdTTRSz12aV6oy6QKlTCdk=','2016-12-20 04:47:45.020350',0,'2014013458','hhhh','','',0,1,'2016-12-07 17:03:19.799979'),(3,'pbkdf2_sha256$30000$sjpMmsxYG3lz$LbSrqvXeKf/0LKej3FfOogMCzErlSqH5YOSALrTg9mU=','2016-12-27 08:17:33.468394',0,'2014013449','','','',0,1,'2016-12-07 17:05:34.123448');
+>>>>>>> 6c3f68f6fe3298b4f52d8a3e938c559e6fe4d406
 /*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -406,7 +410,7 @@ CREATE TABLE `web_bbsuser` (
 
 LOCK TABLES `web_bbsuser` WRITE;
 /*!40000 ALTER TABLE `web_bbsuser` DISABLE KEYS */;
-INSERT INTO `web_bbsuser` VALUES (1,'2014013458','','','张智晴','软件学院','','13944118.jpeg',1,128,2530,0,0,0,0,0,2,'超絶かわいい'),(2,'2014013449','','','杨松臻','软件学院','','ham002009.png',1,33,-580,0,0,0,0,0,3,'咕咕咕');
+INSERT INTO `web_bbsuser` VALUES (1,'2014013458','2333','','张智晴','软件学院','','13944118.jpeg',1,128,2530,0,0,0,0,0,2,'超絶かわいい'),(2,'2014013449','2333','','杨松臻','软件学院','','ham002009.png',1,33,-580,0,0,0,0,0,3,'咕咕咕');
 /*!40000 ALTER TABLE `web_bbsuser` ENABLE KEYS */;
 UNLOCK TABLES;
 

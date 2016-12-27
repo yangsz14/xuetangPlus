@@ -1,0 +1,8 @@
+[{
+  "model": "web.FollowUser",
+  "pk": 1,
+  "fields": {
+    "User1ID": 1,
+    "User2ID": 2
+  }
+}]

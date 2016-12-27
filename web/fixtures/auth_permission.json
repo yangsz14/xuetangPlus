@@ -1,0 +1,256 @@
+{
+"RECORDS":[
+{
+"id":1,
+"name":"Can add log entry",
+"content_type_id":1,
+"codename":"add_logentry"
+},
+{
+"id":2,
+"name":"Can change log entry",
+"content_type_id":1,
+"codename":"change_logentry"
+},
+{
+"id":3,
+"name":"Can delete log entry",
+"content_type_id":1,
+"codename":"delete_logentry"
+},
+{
+"id":4,
+"name":"Can add user",
+"content_type_id":2,
+"codename":"add_user"
+},
+{
+"id":5,
+"name":"Can change user",
+"content_type_id":2,
+"codename":"change_user"
+},
+{
+"id":6,
+"name":"Can delete user",
+"content_type_id":2,
+"codename":"delete_user"
+},
+{
+"id":7,
+"name":"Can add permission",
+"content_type_id":3,
+"codename":"add_permission"
+},
+{
+"id":8,
+"name":"Can change permission",
+"content_type_id":3,
+"codename":"change_permission"
+},
+{
+"id":9,
+"name":"Can delete permission",
+"content_type_id":3,
+"codename":"delete_permission"
+},
+{
+"id":10,
+"name":"Can add group",
+"content_type_id":4,
+"codename":"add_group"
+},
+{
+"id":11,
+"name":"Can change group",
+"content_type_id":4,
+"codename":"change_group"
+},
+{
+"id":12,
+"name":"Can delete group",
+"content_type_id":4,
+"codename":"delete_group"
+},
+{
+"id":13,
+"name":"Can add content type",
+"content_type_id":5,
+"codename":"add_contenttype"
+},
+{
+"id":14,
+"name":"Can change content type",
+"content_type_id":5,
+"codename":"change_contenttype"
+},
+{
+"id":15,
+"name":"Can delete content type",
+"content_type_id":5,
+"codename":"delete_contenttype"
+},
+{
+"id":16,
+"name":"Can add session",
+"content_type_id":6,
+"codename":"add_session"
+},
+{
+"id":17,
+"name":"Can change session",
+"content_type_id":6,
+"codename":"change_session"
+},
+{
+"id":18,
+"name":"Can delete session",
+"content_type_id":6,
+"codename":"delete_session"
+},
+{
+"id":19,
+"name":"Can add user has course",
+"content_type_id":7,
+"codename":"add_userhascourse"
+},
+{
+"id":20,
+"name":"Can change user has course",
+"content_type_id":7,
+"codename":"change_userhascourse"
+},
+{
+"id":21,
+"name":"Can delete user has course",
+"content_type_id":7,
+"codename":"delete_userhascourse"
+},
+{
+"id":22,
+"name":"Can add follow user",
+"content_type_id":8,
+"codename":"add_followuser"
+},
+{
+"id":23,
+"name":"Can change follow user",
+"content_type_id":8,
+"codename":"change_followuser"
+},
+{
+"id":24,
+"name":"Can delete follow user",
+"content_type_id":8,
+"codename":"delete_followuser"
+},
+{
+"id":25,
+"name":"Can add bbs post",
+"content_type_id":9,
+"codename":"add_bbspost"
+},
+{
+"id":26,
+"name":"Can change bbs post",
+"content_type_id":9,
+"codename":"change_bbspost"
+},
+{
+"id":27,
+"name":"Can delete bbs post",
+"content_type_id":9,
+"codename":"delete_bbspost"
+},
+{
+"id":28,
+"name":"Can add bbs course",
+"content_type_id":10,
+"codename":"add_bbscourse"
+},
+{
+"id":29,
+"name":"Can change bbs course",
+"content_type_id":10,
+"codename":"change_bbscourse"
+},
+{
+"id":30,
+"name":"Can delete bbs course",
+"content_type_id":10,
+"codename":"delete_bbscourse"
+},
+{
+"id":31,
+"name":"Can add bbs user",
+"content_type_id":11,
+"codename":"add_bbsuser"
+},
+{
+"id":32,
+"name":"Can change bbs user",
+"content_type_id":11,
+"codename":"change_bbsuser"
+},
+{
+"id":33,
+"name":"Can delete bbs user",
+"content_type_id":11,
+"codename":"delete_bbsuser"
+},
+{
+"id":34,
+"name":"Can add user like post",
+"content_type_id":12,
+"codename":"add_userlikepost"
+},
+{
+"id":35,
+"name":"Can change user like post",
+"content_type_id":12,
+"codename":"change_userlikepost"
+},
+{
+"id":36,
+"name":"Can delete user like post",
+"content_type_id":12,
+"codename":"delete_userlikepost"
+},
+{
+"id":37,
+"name":"Can add user follow post",
+"content_type_id":13,
+"codename":"add_userfollowpost"
+},
+{
+"id":38,
+"name":"Can change user follow post",
+"content_type_id":13,
+"codename":"change_userfollowpost"
+},
+{
+"id":39,
+"name":"Can delete user follow post",
+"content_type_id":13,
+"codename":"delete_userfollowpost"
+},
+{
+"id":40,
+"name":"Can add user has node",
+"content_type_id":14,
+"codename":"add_userhasnode"
+},
+{
+"id":41,
+"name":"Can change user has node",
+"content_type_id":14,
+"codename":"change_userhasnode"
+},
+{
+"id":42,
+"name":"Can delete user has node",
+"content_type_id":14,
+"codename":"delete_userhasnode"
+}
+]
+}
