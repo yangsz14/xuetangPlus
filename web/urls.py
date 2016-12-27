@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^like_post_deal/$', views.like_post_deal),
     url(r'^course/(\d+)/delete_post/(\d+)/parentpost/(\d+)/$', views.delete_post),
     url(r'^course/(\d+)/delete_post/(\d+)/$', views.delete_bigpost),
+    url(r'^course/(\d+)/drawing/$',views.draw_node),
+    url(r'^course/(\d+)/result/$',views.get_result),
     url(r'^post/(\d+)/$',views.post_course_post,name='newpost'),
     url(r'^good/(\d+)/(\d+)/$',views.good_post),
     url(r'^xpostdetail/(\d+)/(\w+)/$',views.xuetang_post_detail),

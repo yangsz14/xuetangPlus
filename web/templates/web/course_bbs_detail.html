@@ -20,7 +20,9 @@
             <div class="info">称号：{{ bigpost.P_User.U_Honor}}</div>
         </div>
         <div class="col-xs-8 item">
-            <div class="name">{{ bigpost.P_Title }}</div>
+            <div class="name">
+                {{ bigpost.P_Title }}
+            </div>
             <div class="content">{{ bigpost.P_Content}}</div>
             {% if bigpost.P_Type == 0 %}
                 <div class="cat info">类别：普通贴</div>

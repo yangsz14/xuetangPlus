@@ -48,6 +48,7 @@ class BBSPost(models.Model):
     P_Top = models.IntegerField(default=0)
     P_Wanted = models.IntegerField(default=0)
     P_BestChild = models.ForeignKey('self',blank=True,default=None,null=True,related_name="parent")
+    P_Level = models.IntegerField(default=0)
 
     def __str__(self):
         return self.P_Title
@@ -69,3 +70,7 @@ class UserFollowPost(models.Model):
 class UserHasCourse(models.Model):
     UserID = models.ForeignKey(BBSUser)
     CourseID = models.ForeignKey(BBSCourse)
+
+class UserHasNode(models.Model):
+    UserID = models.ForeignKey(BBSUser)
+    PostID = models.ForeignKey(BBSPost)

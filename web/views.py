@@ -21,6 +21,7 @@ from django.views.generic.list import *
 from django.core.urlresolvers import reverse
 from .forms import *
 import requests
+import random
 
 # Create your views here.
 
@@ -65,6 +66,17 @@ title_dic = {
     'english':"英语大讨论",
     'otherlan':"二外大讨论",
     'freeselection':"任选大讨论",
+}
+
+level_dic = {
+    'R':0,
+    'SR':1,
+    'UR':2,
+}
+
+prop_dic = {
+    'UR':1,
+    'SR':15
 }
 
 
@@ -230,8 +242,6 @@ class CoursePostListView(ListView):
         context['user'] = myuser
         courses = get_courses(self.request.user)
         context['courses'] = courses
-        print("3")
-
         return context
 
 # class CoursePostDetailView(ListView):
@@ -598,6 +608,54 @@ def good_post(request,courseid,bigpostid):
         parent.P_User.save()
         return HttpResponseRedirect("/course/" + courseid + "/post/" + bigpostid + "/")
     return HttpResponseRedirect("/course/"+courseid+"/post/"+bigpostid+"/")
+
+def draw_node(request,courseid):
+    courses = get_courses(request.user)
+    course = BBSCourse.objects.get(id=courseid)
+    myuser = BBSUser.objects.get(user=request.user)
+    allnotes = BBSPost.objects.filter(P_Course=course,P_Type=type_dic['笔记贴'])
+    if allnotes == []:
+        return render(request,"web/course_drawing.html",{'user':myuser,'courses':courses,'course':course,'hasnote':0})
+    return render(request, "web/course_drawing.html", {'user': myuser, 'courses': courses, 'course': course, 'hasnote': 1})
+
+def get_result(request,courseid):
+    courses = get_courses(request.user)
+    course = BBSCourse.objects.get(id=courseid)
+    myuser = BBSUser.objects.get(user=request.user)
+    noterand = random.randint(1,100)
+    allnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'])
+    getnote = None
+    if noterand >= 1 and noterand <= prop_dic['UR']:
+        urnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['UR'])
+        if len(urnotes) == 0:
+            noterand = random.randint(prop_dic['UR']+1,100)
+        else:
+            siterand = random.randint(0,len(urnotes)-1)
+            print("UR", len(urnotes), siterand)
+            getnote = urnotes[siterand]
+    if noterand >= prop_dic['UR']+1 and noterand <= prop_dic['UR']+prop_dic['SR']:
+        srnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['SR'])
+        if len(srnotes) == 0:
+            noterand = random.randint(prop_dic['UR']+prop_dic['SR']+1,100)
+        else:
+            siterand = random.randint(0,len(srnotes)-1)
+            print("SR", len(srnotes), siterand)
+            getnote = srnotes[siterand]
+    if noterand >= prop_dic['UR'] + prop_dic['SR'] + 1:
+        rnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['R'])
+        if len(rnotes) == 0:
+            getnote = allnotes[0]
+        else:
+            siterand = random.randint(0,len(rnotes)-1)
+            print("R", len(rnotes), siterand)
+            getnote = rnotes[siterand]
+    posts = [getnote]
+    context={}
+    context['posts'] = posts
+    context['course'] = course
+    context['user'] = myuser
+    context['courses'] = courses
+    return render(request, 'web/course_bbs_list.html', context)
 
 
 
