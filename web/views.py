@@ -135,6 +135,7 @@ def bbs_list(request):
     bestposts = sorted(bestposts,key=lambda x:x.P_LikeNum,reverse=True)
 
     posts = bestposts
+
     courses = get_courses(request.user)
     return render(request, 'index.html',{'posts':posts,'courses':courses})
 
@@ -270,7 +271,7 @@ class CoursePostListView(ListView):
                 continue
             newposts.append(post)
 
-
+        newposts.reverse()
         context['posts'] = newposts
         context['course'] = mycourse
         context['user'] = myuser
@@ -377,7 +378,7 @@ def course_post_detail(request,courseid,postid):
             bestchild = child
     if bestchild != None:
         childrenposts.append(bestchild)
-    childrenposts.reverse()
+    #childrenposts.reverse()
 
     likefilter = UserLikePost.objects.filter(UserID=myuser, PostID=bigpost)
     islike = 0
@@ -435,6 +436,7 @@ def post_course_post(request,courseid):
         return HttpResponseRedirect('/login/')
     course = BBSCourse.objects.get(id=courseid)
     courses = get_courses(request.user)
+    myuser = BBSUser.objects.get(user=request.user)
     if request.method == 'POST':
         print(request.POST)
         title = request.POST['P_Title'] if request.POST['P_Title'] else ""
@@ -461,7 +463,7 @@ def post_course_post(request,courseid):
         raiseLevel(userme)
         userme.save()
         return HttpResponseRedirect(reverse('course',args=[courseid]))
-    return render(request, 'web/post_post.html', {'course':course, 'courses':courses})
+    return render(request, 'web/post_post.html', {'user':myuser,'course':course, 'courses':courses})
 
 def xuetang_post_detail(request,postid,source):
     if not request.user.is_authenticated():
