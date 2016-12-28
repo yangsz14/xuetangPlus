@@ -1,0 +1,74 @@
+.messagebox{
+    background-color: #FFFFFF;
+    border-color: #EAEAEA;
+    box-shadow: 0 0 6px rgba(0,0,0,0.03);
+    margin-top: 20px;
+    margin-left: 10%;
+    width: 80%;
+    border-radius: 2px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.messagebox input,.messagebox .input{
+   font-size: 1.5em;
+   margin-top: 18px;
+    margin-left:2%;
+    margin-bottom: 6px;
+    display: block;
+    border-style: solid;
+    border-width: 0 0 1px;
+    background-color: transparent;
+    border-color: rgb(208, 208, 208);
+    color: #5A5A5A;
+    transition: border-color .18s cubic-bezier(0.6,0,.1,1),box-shadow .18s cubic-bezier(0.6,0,.1,1);
+    border-radius: 0;
+    -webkit-appearance: none;
+    width: 95%;
+}
+
+.messagebox .input{
+    min-height: 300px;
+    user-select: text;
+    flex-direction: column;
+}
+
+
+.messagebox input:focus,.messagebox .input:focus
+{
+    border-color: rgb(18, 87, 155);
+    outline: none;
+}
+
+.area{
+    font-size: 1.5em;
+    margin-top: 18px;
+    margin-left:2%;
+    margin-bottom: 6px;
+}
+
+
+.messagebox input:hover,.messagebox .input:hover
+{
+    border-color: #1976D2;
+}
+
+.button1 {
+    height: 40px;
+    background-color: #1976D2;
+    color: #FAFAFA;
+    border-radius: 2px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Open Sans";
+    font-size: 1.3em;
+    padding: 9px 18px;
+    transition: background-color .18s cubic-bezier(0.6,0,.1,1),box-shadow .18s cubic-bezier(0.6,0,.1,1);
+    user-select: none;
+    border-width: 0px;
+    margin-left: 12%;
+}
+
+.button1:hover{
+    box-shadow: 0 2px 5px rgba(0,0,0,0.42);
+}
