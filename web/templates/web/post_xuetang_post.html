@@ -13,39 +13,26 @@
     <div class="form">
     <div class="outbox">
         {% if error %}
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <strong>Error!</strong> {{ error }}
-            </div>
+            <div class="mention" role="alert">
+                    <p>{{ error }}</p>
+                </div>
         {% endif %}
         <form class="form-base" action="/postxpostdetail/{{ source }}/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="messagebox">
                 <input type="text" placeholder="Title" name="P_Title" value="{{ P_Title }}">
 
-            <div class="form_row">
-                <label for="id_title">题目:</label>
-                <input id="id_title" type="text" class="form-control" placeholder="Title" name="P_Title" value="{{ P_Title }}">
-            </div>
-
-            <div class="form_row">
-                <label for="id_content">内容:</label>
-                <input id="id_content" type="text" class="form-control" placeholder="Content" name="P_Content" value="{{ P_Content }}"
-            </div>
-
+                <textarea class="input" id="id_PContent" type="text" placeholder="Content" name="P_Content" value="{{ P_Content }}"></textarea>
             <div class="area">
                 <label for="id_type">分区:{{ source }}</label>
             </div>
-
             </div>
-            <input type="submit" class="button1" value="确认">
+            </div>
+            <input type="submit" type="button" class="button1" value="确认">
+            <label class="button2" for="fileImage">上传图片</label>
+            <input id="fileImage" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
+            <button class="button2"><a href="/{{ source }}">返回</a></button>
         </form>
-        <label class="btn btn-default mybutton blue" for="fileImage">上传图片</label>
-        <input id="fileImage" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
-        <div class="form_row">
-            <label><a href="/">返回</a></label>
-        </div>
     </div>
     </div>
 

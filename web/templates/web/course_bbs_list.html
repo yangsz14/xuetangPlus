@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 
-{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/style.css" /> {% endblock %}
+{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/button.css" /> {% endblock %}
+
+{% block sub-title %}
+<h2>{{ course.C_Name }}课程讨论区</h2>
+<a class="fatie" href="/post/{{ course.id }}">发帖</a>
+{% endblock %}
 
 {% block title %}学堂Plus{% endblock %}
 {% block content %}
 
-    <h1>{{ course.C_Name }}课程讨论区</h1>
     {% if hasnotes == 1 %}
         <h1>
             <span><a id="draw1" href="/course/{{ course.id }}/drawing/0/">抽一发</a></span>
@@ -67,8 +71,6 @@
 
 
 </ul>
-<a class="fatie" href="/post/{{ course.id }}"><img src="{{BASE_DIR}}/static/123.png" width="100px" height="100px"></a>
-
 
     <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
