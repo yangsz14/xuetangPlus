@@ -26,8 +26,8 @@
                 <input id="id_content" type="text" class="form-control" placeholder="Content" name="P_Content" value="">
             </div>
 
-            <input class="btn btn-success form_button" value="作为普通贴发帖" onclick="javascript:normalpost(this)">
-            <input class="btn btn-success form_button" value="作为提问贴发帖" data-toggle="modal" data-target="#myModal">
+            <input id="happyBtn0" class="btn btn-success form_button" value="作为普通贴发帖" onclick="javascript:normalpost(this)">
+            <input id="happyBtn1" class="btn btn-success form_button" value="作为提问贴发帖" data-toggle="modal" data-target="#myModal">
         </form>
         <div class="form_row">
             <label><a href="/course/{{ course.id }}/">返回</a></label>
