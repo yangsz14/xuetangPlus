@@ -30,7 +30,7 @@
         </div>
         <div class="col-xs-8 item">
             <div class="name">{{ post.P_Title }}</div>
-            <div class="content">{{ post.P_Content}}</div>
+            <div class="content" id="content_{{ post.id }}">{{ post.P_Content}}</div>
             {% if post.P_Type == 0 %}
                 <div class="cat info">类别：普通贴</div>
             {% elif post.P_Type == 1%}
@@ -94,6 +94,19 @@
         restr = "/"+sourceid+"/delete_post/"+idstr+"/"
         deletedom.setAttribute("href",restr)
     }
+
+
+    $(function () {
+        {% for post in posts  %}
+            var s = '{{ post.P_Content|safe }}'
+            p = s.match(/__url_start__(\S*?)__url_end__/)
+            while (!(p === null)) {
+                s = s.replace(p[0], "<img src='{{BASE_DIR}}/media/" + p[1] + "' />")
+                p = s.match(/__url_start__(\S*?)__url_end__/)
+            }
+        $('#content_{{ post.id }}').html(s)
+        {% endfor %}
+    });
     </script>
 
 {% endblock %}
