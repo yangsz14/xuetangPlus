@@ -6,6 +6,10 @@
     <h1>{{ user.U_RealName }}您的信息</h1>
     <li>
         <div>头像：<img src="{{ BASE_DIR }}/media/{{ user.U_Image }}"/></div>
+        {% if request.user == user.user %}
+            <label for="changeImage">上传头像</label>
+            <input id="changeImage" name="U_Image" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
+        {% endif %}
         <div>昵称：{{ user.U_name }}</div>
         <div>真名：{{ user.U_RealName }}</div>
         <div>院系：{{ user.U_Major }}</div>
@@ -19,4 +23,55 @@
         <a href="/heanswers/{{user.id}}/">我的回答</a>
     </li>
 
+    <script type="text/javascript">
+    function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    $(function () {
+       $('#changeImage').bind("change", function () {
+           if ($(this).prop('files')[0].type.indexOf("image") <= -1 ) {
+               alert("请选择图片");
+               return;
+           }
+           var formdata = new FormData();
+           formdata.append("file", $(this).prop('files')[0]);
+           console.log($(this).prop('files')[0]);
+           $.ajax({
+               url: "/ajax_change_image/",
+               type: "POST",
+               data: formdata,
+               processData: false,
+               contentType: false,
+               success: function () {
+                   window.location.href = window.location.href;
+               }
+           });
+       }) 
+    });
+    </script>
 {% endblock %}

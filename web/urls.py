@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^(\w+)/delete_post/(\d+)/$',views.delete_xuetang_bigpost),
     url(r'^postxpostdetail/(\w+)/$',views.post_xuetang_post_detail),
     url(r'^ajax_append_image/$', views.ajax_append_image),
+    url(r'^ajax_change_image/$', views.ajax_change_image),
     url(r'^(\w+)/$',views.xuetang_notice),
 ]

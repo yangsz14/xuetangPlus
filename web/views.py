@@ -656,6 +656,14 @@ def ajax_append_image(request):
     path = default_storage.save(data.name, ContentFile(data.read()))
     return HttpResponse(path)
 
+@csrf_exempt
+def ajax_change_image(request):
+    file = request.FILES if request.method == 'POST' else None
+    bbsuser = BBSUser.objects.get(user=request.user)
+    if file:
+        bbsuser.U_Image = file['file']
+        bbsuser.save()
+    return HttpResponse(bbsuser.U_Image)
 
 def draw_note(request,courseid,modeid):
     courses = get_courses(request.user)
