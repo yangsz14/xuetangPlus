@@ -8,9 +8,9 @@
     <h1>{{ course.C_Name }}课程讨论区</h1>
     {% if hasnotes == 1 %}
         <h1>
-            <span><a href="/course/{{ course.id }}/drawing/0/">抽一发</a></span>
-            <span><a href="/course/{{ course.id }}/drawing/1/">抽十发</a></span>
-            <span><a href="/course/{{ course.id }}/drawing/2/">强力抽卡</a></span>
+            <span><a id="draw1" href="/course/{{ course.id }}/drawing/0/">抽一发</a></span>
+            <span><a id="draw10" href="/course/{{ course.id }}/drawing/1/">抽十发</a></span>
+            <span><a id="drawgood" href="/course/{{ course.id }}/drawing/2/">强力抽卡</a></span>
         </h1>
     {% endif %}
 <ul>
