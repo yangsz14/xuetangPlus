@@ -395,12 +395,15 @@ def course_post_detail(request,courseid,postid):
     return render(request,'web/course_bbs_detail.html',context)
 
 
-def user_self_info(request):
+def user_self_info(request, param, action):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
-    userme = BBSUser.objects.get(user=request.user)
+    visitedUser = User.objects.get(username=param)
+    visitedUser = BBSUser.objects.get(user=visitedUser)
     courses = get_courses(request.user)
-    return render(request,'web/user_self_info.html',{'user':userme, 'courses':courses})
+    #userme = BBSUser.objects.get(user=request.user)
+    #courses = get_courses(request.user)
+    return render(request,'web/user_self_info.html',{'user':visitedUser, 'courses':courses})
 
 @csrf_exempt
 def like_post_deal(request):
@@ -655,6 +658,14 @@ def ajax_append_image(request):
     path = default_storage.save(data.name, ContentFile(data.read()))
     return HttpResponse(path)
 
+@csrf_exempt
+def ajax_change_image(request):
+    file = request.FILES if request.method == 'POST' else None
+    bbsuser = BBSUser.objects.get(user=request.user)
+    if file:
+        bbsuser.U_Image = file['file']
+        bbsuser.save()
+    return HttpResponse(bbsuser.U_Image)
 
 def draw_note(request,courseid,modeid):
     courses = get_courses(request.user)

@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^login/$',views.login,name='login'),
     url(r'^logout/$',views.logout,name='logout'),
     url(r'^course/(\d+)/post/(\d+)/$',views.course_post_detail),
-    url(r'^me/$',views.user_self_info,name='me'),
+    url(r'^me/(\w+)/(\w*)$',views.user_self_info,name='me'),
     url(r'^helikes/(\d+)/$',views.user_self_like),
     url(r'^heasks/(\d+)/$',views.user_self_ask),
     url(r'^heanswers/(\d+)/$',views.user_self_answer),
@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^(\w+)/delete_post/(\d+)/$',views.delete_xuetang_bigpost),
     url(r'^postxpostdetail/(\w+)/$',views.post_xuetang_post_detail),
     url(r'^ajax_append_image/$', views.ajax_append_image),
+    url(r'^ajax_change_image/$', views.ajax_change_image),
     url(r'^(\w+)/$',views.xuetang_notice),
 ]

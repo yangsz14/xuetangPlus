@@ -22,7 +22,7 @@
             <a class="navbar-brand" href="{%url 'index'%}">学堂Plus</a>
         </div>
         <div class="navbar-header">
-            <a class="navbar-brand" href="{%url 'me'%}">我</a>
+            <a class="navbar-brand" href="/me/{{ request.user.username }}">我</a>
         </div>
         <div class="navbar-header">
             <a class="navbar-brand" href="/course/3/">课程</a>
