@@ -20,7 +20,7 @@ from django.views.generic.detail import *
 from django.views.generic.list import *
 from django.core.urlresolvers import reverse
 from .forms import *
-import requests
+#import requests
 import random
 
 # Create your views here.
@@ -135,6 +135,7 @@ def bbs_list(request):
     bestposts = sorted(bestposts,key=lambda x:x.P_LikeNum,reverse=True)
 
     posts = bestposts
+
     courses = get_courses(request.user)
     return render(request, 'index.html',{'posts':posts,'courses':courses})
 
@@ -221,11 +222,22 @@ def login(request):
     if request.method == 'POST':
         studentidin = request.POST['studentid']
         passwordin = request.POST['password']
-        user = validate_user_bymyself(request,studentid=studentidin, password=passwordin)
+        if not studentidin:
+            return render(request, "web/login.html", {'error': "请输入学号"})
+        elif not passwordin:
+            return render(request, "web/login.html", {'error': "请输入密码"})
+
+        user = auth.authenticate(username=studentidin, password=passwordin)
+
         if user is not None:
+            auth.login(request, user)
             return HttpResponseRedirect('/')
         else:
-            return render(request, "web/login.html", {'error': "学号或密码不正确"})
+            user = validate_user_bymyself(request,studentid=studentidin, password=passwordin)
+            if user is not None:
+                return HttpResponseRedirect('/')
+            else:
+                return render(request, "web/login.html", {'error': "学号或密码不正确"})
     else:
         return render(request, "web/login.html")
 
@@ -266,9 +278,11 @@ class CoursePostListView(ListView):
         for post in posts:
             if post.P_Type == type_dic['笔记贴'] and (post not in mynotes):
                continue
+            if post.P_Type == type_dic['大讨论区']:
+                continue
             newposts.append(post)
 
-
+        newposts.reverse()
         context['posts'] = newposts
         context['course'] = mycourse
         context['user'] = myuser
@@ -375,7 +389,7 @@ def course_post_detail(request,courseid,postid):
             bestchild = child
     if bestchild != None:
         childrenposts.append(bestchild)
-    childrenposts.reverse()
+    #childrenposts.reverse()
 
     likefilter = UserLikePost.objects.filter(UserID=myuser, PostID=bigpost)
     islike = 0
@@ -433,6 +447,7 @@ def post_course_post(request,courseid):
         return HttpResponseRedirect('/login/')
     course = BBSCourse.objects.get(id=courseid)
     courses = get_courses(request.user)
+    myuser = BBSUser.objects.get(user=request.user)
     if request.method == 'POST':
         print(request.POST)
         title = request.POST['P_Title'] if request.POST['P_Title'] else ""
@@ -459,7 +474,7 @@ def post_course_post(request,courseid):
         raiseLevel(userme)
         userme.save()
         return HttpResponseRedirect(reverse('course',args=[courseid]))
-    return render(request, 'web/post_post.html', {'course':course, 'courses':courses})
+    return render(request, 'web/post_post.html', {'user':myuser,'course':course, 'courses':courses})
 
 def xuetang_post_detail(request,postid,source):
     if not request.user.is_authenticated():
@@ -859,6 +874,8 @@ def user_self_answer(request,userid):
             continue
         thisposts.append(hispost.P_Parent)
     return render(request,'web/search_list.html',{'courses':courses,'posts':thisposts,'info':"回答"})
+
+#test
 
 
 
