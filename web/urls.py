@@ -3,7 +3,7 @@ from . import views
 from .views import *
 urlpatterns = [
     url(r'^$', views.bbs_list, name='index'),
-    url(r'^course/(?P<courseid>\d+)/$', CoursePostListView.as_view(),name='course'),
+    url(r'^course/(\d+)/$', views.course_post_list,name='course'),
     url(r'^login/$',views.login,name='login'),
     url(r'^logout/$',views.logout,name='logout'),
     url(r'^course/(\d+)/post/(\d+)/$',views.course_post_detail),

@@ -127,6 +127,7 @@ def get_courses(user):
     return courses
 
 def bbs_list(request):
+    print("SHIT4")
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     bestposts = BBSPost.objects.filter(P_Parent=None,P_Type=type_dic['大讨论区'])
@@ -135,7 +136,7 @@ def bbs_list(request):
     bestposts = sorted(bestposts,key=lambda x:x.P_LikeNum,reverse=True)
 
     posts = bestposts
-
+    print("userme",request.user)
     courses = get_courses(request.user)
     return render(request, 'index.html',{'posts':posts,'courses':courses})
 
@@ -164,7 +165,8 @@ def update_course_info(studentid):
 
 
 def validate_user(request,studentid,password):
-    response = requests.post('http://se.zhuangty.com:8000/users/register', data={"apikey": "API Key", "apisecret": "API Secret Key", "username": studentid, "password": password})
+    data = json.dumps({"apikey": "API Key", "apisecret": "API Secret Key", "username": studentid, "password": password})
+    response = requests.post('http://se.zhuangty.com:8000/users/register', data)
     if response.json()['message'] == 'Success':
         users = BBSUser.objects.filter(U_studentid=studentid)
         if len(users) == 0:
@@ -236,55 +238,99 @@ def login(request):
     else:
         return render(request, "web/login.html")
 
-class CoursePostListView(ListView):
+# class CoursePostListView(ListView):
+#
+#     model = BBSPost
+#     template_name = 'web/course_bbs_list.html'
+#     pk_courseid_kwarg = 'courseid'
+#
+#     def get_context_data(self,**kwargs):
+#
+#         context = super(CoursePostListView,self).get_context_data(**kwargs)
+#         courseid = int(self.kwargs.get(self.pk_courseid_kwarg, None))
+#         #print('mycourseid:', courseid)
+#         mycourse = BBSCourse.objects.get(id=courseid)
+#         #print('mycourse:', mycourse)
+#         #print('myuser:', self.request.user)
+#         hasnotes = 0
+#
+#         if not self.request.user.is_authenticated():
+#             return HttpResponseRedirect('/login/')
+#         courses = get_courses(self.request.user)
+#         if mycourse not in courses:
+#             print("SHIT3")
+#             return HttpResponseRedirect('/')
+#
+#         #print('myuser:',self.request.user)
+#         myuser = BBSUser.objects.get(user=self.request.user)
+#         #print('myuser:', myuser)
+#
+#         posts = BBSPost.objects.filter(P_Course=mycourse,P_Parent=None)
+#
+#         allnotes = BBSPost.objects.filter(P_Course=mycourse, P_Type=type_dic['笔记贴'])
+#         if len(allnotes) != 0:
+#             hasnotes = 1
+#         mynotesrelas = UserHasNode.objects.filter(UserID=myuser)
+#         mynotes = []
+#         posts = list(posts)
+#
+#         for mynotesrela in mynotesrelas:
+#             mynotes.append(mynotesrela.PostID)
+#         newposts = []
+#         for post in posts:
+#             if post.P_Type == type_dic['笔记贴'] and (post not in mynotes):
+#                continue
+#             if post.P_Type == type_dic['大讨论区']:
+#                 continue
+#             newposts.append(post)
+#
+#         newposts.reverse()
+#         context['posts'] = newposts
+#         context['course'] = mycourse
+#         context['user'] = myuser
+#
+#         context['courses'] = courses
+#         context['hasnotes'] = hasnotes
+#         return context
 
-    model = BBSPost
-    template_name = 'web/course_bbs_list.html'
-    pk_courseid_kwarg = 'courseid'
+def course_post_list(request,courseid):
+    context = {}
+    mycourse = BBSCourse.objects.get(id=courseid)
+    hasnotes = 0
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    courses = get_courses(request.user)
+    if mycourse not in courses:
+        return HttpResponseRedirect('/')
 
-    def get_context_data(self,**kwargs):
+    myuser = BBSUser.objects.get(user=request.user)
+    posts = BBSPost.objects.filter(P_Course=mycourse, P_Parent=None)
 
-        context = super(CoursePostListView,self).get_context_data(**kwargs)
-        courseid = int(self.kwargs.get(self.pk_courseid_kwarg, None))
-        #print('mycourseid:', courseid)
-        mycourse = BBSCourse.objects.get(id=courseid)
-        #print('mycourse:', mycourse)
-        #print('myuser:', self.request.user)
-        hasnotes = 0
-        if not self.request.user.is_authenticated():
-            return HttpResponseRedirect('/login/')
+    allnotes = BBSPost.objects.filter(P_Course=mycourse, P_Type=type_dic['笔记贴'])
+    if len(allnotes) != 0:
+        hasnotes = 1
+    mynotesrelas = UserHasNode.objects.filter(UserID=myuser)
+    mynotes = []
+    posts = list(posts)
 
-        #print('myuser:',self.request.user)
-        myuser = BBSUser.objects.get(user=self.request.user)
-        #print('myuser:', myuser)
+    for mynotesrela in mynotesrelas:
+        mynotes.append(mynotesrela.PostID)
+    newposts = []
+    for post in posts:
+        if post.P_Type == type_dic['笔记贴'] and (post not in mynotes):
+            continue
+        if post.P_Type == type_dic['大讨论区']:
+            continue
+        newposts.append(post)
 
-        posts = BBSPost.objects.filter(P_Course=mycourse,P_Parent=None)
+    newposts.reverse()
+    context['posts'] = newposts
+    context['course'] = mycourse
+    context['user'] = myuser
 
-        allnotes = BBSPost.objects.filter(P_Course=mycourse, P_Type=type_dic['笔记贴'])
-        if len(allnotes) != 0:
-            hasnotes = 1
-        mynotesrelas = UserHasNode.objects.filter(UserID=myuser)
-        mynotes = []
-        posts = list(posts)
-
-        for mynotesrela in mynotesrelas:
-            mynotes.append(mynotesrela.PostID)
-        newposts = []
-        for post in posts:
-            if post.P_Type == type_dic['笔记贴'] and (post not in mynotes):
-               continue
-            if post.P_Type == type_dic['大讨论区']:
-                continue
-            newposts.append(post)
-
-        newposts.reverse()
-        context['posts'] = newposts
-        context['course'] = mycourse
-        context['user'] = myuser
-        courses = get_courses(self.request.user)
-        context['courses'] = courses
-        context['hasnotes'] = hasnotes
-        return context
+    context['courses'] = courses
+    context['hasnotes'] = hasnotes
+    return render(request,'web/course_bbs_list.html',context)
 
 # class CoursePostDetailView(ListView):
 #
@@ -349,6 +395,9 @@ def course_post_detail(request,courseid,postid):
     thiscourse = BBSCourse.objects.get(id=courseid)
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
+    courses = get_courses(request.user)
+    if thiscourse not in courses:
+        return HttpResponseRedirect('/')
 
     myuser = BBSUser.objects.get(user=request.user)
     bigpost = BBSPost.objects.get(id=postid, P_Course=thiscourse)
@@ -397,7 +446,7 @@ def course_post_detail(request,courseid,postid):
     context['childrenposts'] = childrenposts
     context['islike'] = islike
     context['form'] = form
-    courses = get_courses(request.user)
+
     context['courses'] = courses
     return render(request,'web/course_bbs_detail.html',context)
 
@@ -442,6 +491,8 @@ def post_course_post(request,courseid):
         return HttpResponseRedirect('/login/')
     course = BBSCourse.objects.get(id=courseid)
     courses = get_courses(request.user)
+    if course not in courses:
+        return HttpResponseRedirect('/')
     myuser = BBSUser.objects.get(user=request.user)
     if request.method == 'POST':
         print(request.POST)
@@ -559,6 +610,10 @@ def xuetang_notice(request,source):
 def delete_post(request,courseid,postid,parentid):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
+    mycourse = BBSCourse.objects.get(id=courseid)
+    courses = get_courses(request.user)
+    if mycourse not in courses:
+        return HttpResponseRedirect('/')
     postde = BBSPost.objects.get(id=postid)
     likes = UserLikePost.objects.filter(PostID=postde)
     follows = UserFollowPost.objects.filter(PostID=postde)
@@ -575,6 +630,10 @@ def delete_post(request,courseid,postid,parentid):
 def delete_bigpost(request,courseid,postid):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
+    mycourse = BBSCourse.objects.get(id=courseid)
+    courses = get_courses(request.user)
+    if mycourse not in courses:
+        return HttpResponseRedirect('/')
     postde = BBSPost.objects.get(id=postid)
     likes = UserLikePost.objects.filter(PostID=postde)
     follows = UserFollowPost.objects.filter(PostID=postde)
@@ -591,6 +650,7 @@ def delete_bigpost(request,courseid,postid):
 def delete_xuetang_post(request,parentid,source,postid):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
+
     postde = BBSPost.objects.get(id=postid)
     likes = UserLikePost.objects.filter(PostID=postde)
     follows = UserFollowPost.objects.filter(PostID=postde)
@@ -633,6 +693,10 @@ def logout(request):
 def good_post(request,courseid,bigpostid):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
+    mycourse = BBSCourse.objects.get(id=courseid)
+    courses = get_courses(request.user)
+    if mycourse not in courses:
+        return HttpResponseRedirect('/')
     if request.method == 'POST':
         goodpostid = int(request.POST['postID'])
         parentid = int(request.POST['parentID'])
@@ -676,8 +740,12 @@ def ajax_change_image(request):
     return HttpResponse(bbsuser.U_Image)
 
 def draw_note(request,courseid,modeid):
-    courses = get_courses(request.user)
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     course = BBSCourse.objects.get(id=courseid)
+    courses = get_courses(request.user)
+    if course not in courses:
+        return HttpResponseRedirect('/')
     myuser = BBSUser.objects.get(user=request.user)
     allnotes = BBSPost.objects.filter(P_Course=course,P_Type=type_dic['笔记贴'])
 
@@ -760,8 +828,10 @@ def draw_10(course):
 def get_result(request,courseid):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
-    courses = get_courses(request.user)
     course = BBSCourse.objects.get(id=courseid)
+    courses = get_courses(request.user)
+    if course not in courses:
+        return HttpResponseRedirect('/')
     myuser = BBSUser.objects.get(user=request.user)
     myuser.U_GPB -= gpb_amount['normal']
     myuser.save()
@@ -783,6 +853,8 @@ def get_result10(request,courseid):
         return HttpResponseRedirect('/login/')
     courses = get_courses(request.user)
     course = BBSCourse.objects.get(id=courseid)
+    if course not in courses:
+        return HttpResponseRedirect('/')
     myuser = BBSUser.objects.get(user=request.user)
     myuser.U_GPB -= gpb_amount['ten']
     myuser.save()
@@ -805,6 +877,8 @@ def get_resultgood(request,courseid):
         return HttpResponseRedirect('/login/')
     courses = get_courses(request.user)
     course = BBSCourse.objects.get(id=courseid)
+    if course not in courses:
+        return HttpResponseRedirect('/')
     myuser = BBSUser.objects.get(user=request.user)
     myuser.U_GPB -= gpb_amount['gold']
     myuser.save()
