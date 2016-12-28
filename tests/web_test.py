@@ -34,12 +34,12 @@ class LoginTest(LiveServerTestCase):
             self.browser.get('%s%s' % (self.live_server_url, '/login'))
         except Exception as e:
             print("give Error:",str(e))
-    
+
         self.browser.implicitly_wait(5)
-    
+
         name_box = self.browser.find_element_by_id('id_studentid')
         name_box.send_keys("")
-    
+
         password_box = self.browser.find_element_by_id('id_password')
         password_box.send_keys("")
 
@@ -50,7 +50,7 @@ class LoginTest(LiveServerTestCase):
 
         self.browser.implicitly_wait(2)
         print("self.browser",self.browser)
-        self.browser.save_screenshot('4.png')
+        # self.browser.save_screenshot('4.png')
         self.assertIn('Error', self.browser.find_element_by_id('content').text)
 
     def test_login_with_wrong_input(self):
@@ -58,12 +58,12 @@ class LoginTest(LiveServerTestCase):
             self.browser.get('%s%s' % (self.live_server_url, '/login'))
         except Exception as e:
             print("give Error:",str(e))
-    
+
         self.browser.implicitly_wait(5)
-    
+
         name_box = self.browser.find_element_by_id('id_studentid')
         name_box.send_keys("2014013460")
-    
+
         password_box = self.browser.find_element_by_id('id_password')
         password_box.send_keys("wrongpwd")
 
@@ -86,19 +86,22 @@ class LoginTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
+        # self.browser.save_screenshot('fuck0.png')
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
+        # self.browser.save_screenshot('fuck1.png')
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
         submit_button.click()
         time.sleep(2)
+        # self.browser.save_screenshot('fuck2.png')
 
         self.browser.implicitly_wait(2)
         print("self.browser",self.browser)
-        self.browser.save_screenshot('3.png')
+        # self.browser.save_screenshot('fuck3.png')
         self.assertIn('学堂讨论区', self.browser.find_element_by_id('content').text)
 
 class BBSListTest(LiveServerTestCase):
@@ -139,10 +142,10 @@ class BBSListTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
@@ -180,42 +183,42 @@ class CoursePostListViewTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
 
         print("self.browser",self.browser)
-       # self.browser.save_screenshot('3.png')
+        self.browser.save_screenshot('3.png')
         self.assertIn('用户登录', self.browser.find_element_by_id('content').text)
 
-    def test_cplv_with_login(self):
-        try:
-            self.browser.get('%s%s' % (self.live_server_url, '/login'))
-        except Exception as e:
-            print("give Error:",str(e))
-    
-        self.browser.implicitly_wait(5)
-    
-        name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
-    
-        password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
-
-        time.sleep(2)
-        submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
-        submit_button.click()
-        time.sleep(2)
-
-        self.browser.implicitly_wait(2)
-        print("self.browser",self.browser)
-
-        self.assertIn('学堂讨论区', self.browser.find_element_by_id('content').text)
-
-        try:
-            self.browser.get('%s%s' % (self.live_server_url, '/course/1'))
-        except Exception as e:
-            print("give Error:",str(e))
-    
-        self.browser.implicitly_wait(2)
-        print("self.browser",self.browser)
-
-        self.assertIn('课程讨论区', self.browser.find_element_by_id('content').text)
+    # def test_cplv_with_login(self):
+    #     try:
+    #         self.browser.get('%s%s' % (self.live_server_url, '/login'))
+    #     except Exception as e:
+    #         print("give Error:",str(e))
+    #
+    #     self.browser.implicitly_wait(5)
+    #
+    #     name_box = self.browser.find_element_by_id('id_studentid')
+    #     name_box.send_keys("2014013458")
+    #
+    #     password_box = self.browser.find_element_by_id('id_password')
+    #     password_box.send_keys("mp158269")
+    #
+    #     time.sleep(2)
+    #     submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
+    #     submit_button.click()
+    #     time.sleep(2)
+    #
+    #     self.browser.implicitly_wait(2)
+    #     print("self.browser",self.browser)
+    #
+    #     self.assertIn('学堂讨论区', self.browser.find_element_by_id('content').text)
+    #
+    #     try:
+    #         self.browser.get('%s%s' % (self.live_server_url, '/course/1'))
+    #     except Exception as e:
+    #         print("give Error:",str(e))
+    #
+    #     self.browser.implicitly_wait(2)
+    #     print("self.browser",self.browser)
+    #
+    #     self.assertIn('课程讨论区', self.browser.find_element_by_id('content').text)
 
 class CoursePostDetailTest(LiveServerTestCase):
     fixtures = ['authUsers.json','users.json','courses.json','posts.json','followUser.json','hasCourse.json','likePost.json']
@@ -255,10 +258,10 @@ class CoursePostDetailTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
@@ -289,10 +292,10 @@ class CoursePostDetailTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
@@ -330,10 +333,10 @@ class CoursePostDetailTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
@@ -411,10 +414,10 @@ class UserSelfInfoTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
@@ -474,10 +477,10 @@ class PostCoursePostTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
@@ -524,10 +527,10 @@ class PostCoursePostTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
@@ -574,10 +577,10 @@ class PostCoursePostTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
@@ -624,10 +627,10 @@ class PostCoursePostTest(LiveServerTestCase):
         self.browser.implicitly_wait(5)
     
         name_box = self.browser.find_element_by_id('id_studentid')
-        name_box.send_keys("2014013460")
+        name_box.send_keys("2014013458")
     
         password_box = self.browser.find_element_by_id('id_password')
-        password_box.send_keys("hhhh2333")
+        password_box.send_keys("mp158269")
 
         time.sleep(2)
         submit_button = self.browser.find_element_by_css_selector('input.btn.btn-success.form_button')
