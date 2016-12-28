@@ -20,7 +20,7 @@ from django.views.generic.detail import *
 from django.views.generic.list import *
 from django.core.urlresolvers import reverse
 from .forms import *
-import requests
+#import requests
 import random
 
 # Create your views here.
