@@ -224,7 +224,7 @@ def login(request):
         passwordin = request.POST['password']
         if not studentidin:
             return render(request, "web/login.html", {'error': "请输入学号"})
-        else if not passwordin:
+        elif not passwordin:
             return render(request, "web/login.html", {'error': "请输入密码"})
 
         user = auth.authenticate(username=studentidin, password=passwordin)
