@@ -18,17 +18,6 @@
             {% endif %}
             <form class="" action="/login/" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-
-<<<<<<< Updated upstream
-                <div class="form_row">
-                    <label for="id_studentid">学号:</label>
-                    <input type="text" class="form-control" placeholder="请填写学号" id="id_studentid" maxlength="11" name="studentid" value="{{ studentid }}">
-                </div>
-
-                <div class="form_row">
-                    <label for="id_password">密码:</label>
-                    <input type="password" class="form-control" placeholder="请填写密码" id="id_password" name="password">
-=======
                 <div class="stid">
                     <dd>
                     <span for="id_studentid">学号:</span>
@@ -45,7 +34,6 @@
                     <dt>
                     <input type="password" placeholder="不少于8个字符" id="id_password" name="password">
                     </dt>
->>>>>>> Stashed changes
                 </div>
 
                 <button type="submit" class="button1" value="登录">登录</button>
