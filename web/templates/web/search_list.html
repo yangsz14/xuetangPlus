@@ -27,7 +27,7 @@ var array=new Array("post","notice","complaint","chat","science","engineer","pe"
         <div class="dis">
             <div class="inner">
                 {% if post.P_Type <= 3 %}
-            <a href="/course/{{ post.P_Course.id }}/post/{{ post.id }}/">详情</a>
+            <a href="/course/{{ post.P_Course.id }}/post/{{ post.id }}/">{{post.P_Title}}</a>
                 {% else %}
             <a href="/xpostdetail/{{ post.id }}/"+array[{{post.P_Section}}+1]>详情</a>
                 {% endif %}
