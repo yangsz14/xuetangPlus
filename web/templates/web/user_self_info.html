@@ -10,7 +10,15 @@
             <label for="changeImage">上传头像</label>
             <input id="changeImage" name="U_Image" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
         {% endif %}
-        <div>昵称：{{ user.U_name }}</div>
+        {% if request.user == user.user %}
+        <div>
+            昵称
+            <input id="changeNick" type="text" value="{{ user.U_name }}"/>
+            <input id="saveNick" type="button" value="修改昵称"/>
+        </div>
+        {% else %}
+            <div>昵称：{{ user.U_name }}</div>
+        {% endif %}
         <div>真名：{{ user.U_RealName }}</div>
         <div>院系：{{ user.U_Major }}</div>
         <div>等级：{{ user.U_Level}}</div>
@@ -71,7 +79,25 @@
                    window.location.href = window.location.href;
                }
            });
-       }) 
+       })
     });
+
+    $(function () {
+        $('#saveNick').bind("click", function () {
+            console.log("click");
+            var newNick = $('#changeNick').val();
+            if (newNick != "") {
+                $.ajax({
+                    url:'/ajax_change_nickname/',
+                    type: 'POST',
+                    data: {'newNick': newNick},
+                    success: function () {
+                        alert("修改成功");
+                    }
+                })
+            }
+        })
+    });
+
     </script>
 {% endblock %}

@@ -620,6 +620,13 @@ def ajax_change_image(request):
         bbsuser.save()
     return HttpResponse(bbsuser.U_Image)
 
+@csrf_exempt
+def ajax_change_nickname(request):
+    bbsuser = BBSUser.objects.get(user=request.user)
+    bbsuser.U_name = request.POST['newNick']
+    bbsuser.save()
+    return  HttpResponse("修改成功")
+
 def draw_note(request,courseid,modeid):
     courses = get_courses(request.user)
     course = BBSCourse.objects.get(id=courseid)
