@@ -266,6 +266,8 @@ class CoursePostListView(ListView):
         for post in posts:
             if post.P_Type == type_dic['笔记贴'] and (post not in mynotes):
                continue
+            if post.P_Type == type_dic['大讨论区']:
+                continue
             newposts.append(post)
 
 
@@ -841,6 +843,8 @@ def user_self_answer(request,userid):
             continue
         thisposts.append(hispost.P_Parent)
     return render(request,'web/search_list.html',{'courses':courses,'posts':thisposts,'info':"回答"})
+
+#test
 
 
 
