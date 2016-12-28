@@ -20,7 +20,7 @@ from django.views.generic.detail import *
 from django.views.generic.list import *
 from django.core.urlresolvers import reverse
 from .forms import *
-import requests
+#import requests
 import random
 
 # Create your views here.
@@ -224,6 +224,11 @@ def login(request):
     if request.method == 'POST':
         studentidin = request.POST['studentid']
         passwordin = request.POST['password']
+        if not studentidin:
+            return render(request, "web/login.html", {'error': "请输入学号"})
+        elif not passwordin:
+            return render(request, "web/login.html", {'error': "请输入密码"})
+
         user = auth.authenticate(username=studentidin, password=passwordin)
 
         if user is not None:
@@ -332,65 +337,6 @@ def course_post_list(request,courseid):
     context['hasnotes'] = hasnotes
     return render(request,'web/course_bbs_list.html',context)
 
-# class CoursePostDetailView(ListView):
-#
-#     model = BBSPost
-#     template_name = 'web/course_bbs_detail.html'
-#     pk_courseid_kwarg = 'courseid'
-#     pk_postid_kwarg = 'postid'
-#
-#     def get_context_data(self,**kwargs):
-#         context = super(CoursePostDetailView, self).get_context_data(**kwargs)
-#         courseid = int(self.kwargs.get(self.pk_courseid_kwarg, None))
-#         thiscourse = BBSCourse.objects.get(id=courseid)
-#         if not self.request.user.is_authenticated():
-#             return HttpResponseRedirect('/login/')
-#         myuser = BBSUser.objects.get(user=self.request.user)
-#         postid = int(self.kwargs.get(self.pk_postid_kwarg, None))
-#         bigpost = BBSPost.objects.get(id=postid,P_Course=thiscourse)
-#
-#         params = self.request.POST if self.request.method == 'POST' else None
-#
-#         form = ReplyForm(params)
-#         if form.is_valid():
-#             reply_get = form.save(commit=False)
-#             print(reply_get.P_Title)
-#             reply = BBSPost()
-#             reply.P_User = myuser
-#             reply.P_Title = reply_get.P_Title
-#             reply.P_Content = reply_get.P_Content
-#             reply.P_Type = 3
-#             reply.P_Parent = bigpost
-#             reply.save()
-#             form = ReplyForm(params)
-#
-#         childrenposts = BBSPost.objects.filter(P_Parent=bigpost)
-#         likefilter = UserLikePost.objects.filter(UserID=myuser,PostID=bigpost)
-#         islike = 0
-#         if len(likefilter) != 0:
-#             islike = 1
-#
-#         context['bigpost'] = bigpost
-#         context['course'] = thiscourse
-#         context['user'] = myuser
-#         context['childrenposts'] = childrenposts
-#         context['islike'] = islike
-#         context['form'] = form
-#         return context
-
-# class UserDetailView(DetailView):
-#
-#     model = BBSUser
-#     template_name = 'web/user_self_info.html'
-#
-#     def get_context_data(self,**kwargs):
-#         context = super(UserDetailView, self).get_context_data(**kwargs)
-#         if not self.request.user.is_authenticated():
-#             return HttpResponseRedirect('/login/')
-#         userme = BBSUser.objects.get(user=self.request.user)
-#         context['user'] = userme
-#         return context
-
 def course_post_detail(request,courseid,postid):
     thiscourse = BBSCourse.objects.get(id=courseid)
     if not request.user.is_authenticated():
@@ -449,7 +395,6 @@ def course_post_detail(request,courseid,postid):
 
     context['courses'] = courses
     return render(request,'web/course_bbs_detail.html',context)
-
 
 def user_self_info(request, param, action):
     if not request.user.is_authenticated():
@@ -738,6 +683,13 @@ def ajax_change_image(request):
         bbsuser.U_Image = file['file']
         bbsuser.save()
     return HttpResponse(bbsuser.U_Image)
+
+@csrf_exempt
+def ajax_change_nickname(request):
+    bbsuser = BBSUser.objects.get(user=request.user)
+    bbsuser.U_name = request.POST['newNick']
+    bbsuser.save()
+    return  HttpResponse("修改成功")
 
 def draw_note(request,courseid,modeid):
     if not request.user.is_authenticated():
