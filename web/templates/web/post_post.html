@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}-登录{% endblock %}
+{% block title %}学堂Plus{% endblock %}
 {% block content %}
 
     <div class="form">
@@ -80,6 +80,12 @@
         pContent = document.getElementById('id_content').value
         pwanted = document.getElementById('wantedin').value
         coustr = {{ course.id }}
+        hisgpb = {{ user.U_GPB }}
+        if(hisgpb < pwanted)
+        {
+            alert("GP币不够啦！！")
+            return
+        }
         $.ajax
         ({
             url: "/post/"+coustr+"/",
