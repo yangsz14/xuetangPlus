@@ -221,11 +221,17 @@ def login(request):
     if request.method == 'POST':
         studentidin = request.POST['studentid']
         passwordin = request.POST['password']
-        user = validate_user_bymyself(request,studentid=studentidin, password=passwordin)
+        user = auth.authenticate(username=studentidin, password=passwordin)
+
         if user is not None:
+            auth.login(request, user)
             return HttpResponseRedirect('/')
         else:
-            return render(request, "web/login.html", {'error': "学号或密码不正确"})
+            user = validate_user_bymyself(request,studentid=studentidin, password=passwordin)
+            if user is not None:
+                return HttpResponseRedirect('/')
+            else:
+                return render(request, "web/login.html", {'error': "学号或密码不正确"})
     else:
         return render(request, "web/login.html")
 
