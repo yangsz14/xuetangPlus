@@ -1,0 +1,8 @@
+[{
+  "model": "web.BBSCourse",
+  "pk": 1,
+  "fields": {
+    "C_Name": "SE(3)",
+    "C_SeqNum": "12345678"
+  }
+}]

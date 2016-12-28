@@ -1,0 +1,29 @@
+[{
+  "model": "auth.User",
+  "pk": 1,
+  "fields": {
+    "password": "hhhh2333",
+    "is_superuser": 1,
+    "username": "cwcwtwv",
+    "first_name": "Yinuo",
+    "last_name": "Yang",
+    "email": "cwcwtwv@qq.com",
+    "is_staff": 1,
+    "is_active": 1,
+    "date_joined": "2016-11-01 00:00:00+00:00"
+  }
+},{
+  "model": "auth.User",
+  "pk": 2,
+  "fields": {
+    "password": "hhhh2333",
+    "is_superuser": 1,
+    "username": "cwcwtwv2",
+    "first_name": "Yinuo",
+    "last_name": "Yang",
+    "email": "cwcwtwv2@qq.com",
+    "is_staff": 1,
+    "is_active": 1,
+    "date_joined": "2016-11-01 00:00:00+00:00"
+  }
+}]

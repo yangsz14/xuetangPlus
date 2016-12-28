@@ -8,5 +8,6 @@ admin.site.register(UserHasCourse)
 admin.site.register(FollowUser)
 admin.site.register(UserLikePost)
 admin.site.register(UserFollowPost)
+admin.site.register(UserHasNode)
 
 # Register your models here.
