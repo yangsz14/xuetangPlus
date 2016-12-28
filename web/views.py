@@ -357,12 +357,15 @@ def course_post_detail(request,courseid,postid):
     return render(request,'web/course_bbs_detail.html',context)
 
 
-def user_self_info(request):
+def user_self_info(request, param, action):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
-    userme = BBSUser.objects.get(user=request.user)
+    visitedUser = User.objects.get(username=param)
+    visitedUser = BBSUser.objects.get(user=visitedUser)
     courses = get_courses(request.user)
-    return render(request,'web/user_self_info.html',{'user':userme, 'courses':courses})
+    #userme = BBSUser.objects.get(user=request.user)
+    #courses = get_courses(request.user)
+    return render(request,'web/user_self_info.html',{'user':visitedUser, 'courses':courses})
 
 @csrf_exempt
 def like_post_deal(request):

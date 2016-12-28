@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^login/$',views.login,name='login'),
     url(r'^logout/$',views.logout,name='logout'),
     url(r'^course/(\d+)/post/(\d+)/$',views.course_post_detail),
-    url(r'^me/$',views.user_self_info,name='me'),
+    url(r'^me/(\w+)/(\w*)$',views.user_self_info,name='me'),
     url(r'^like_post_deal/$', views.like_post_deal),
     url(r'^course/(\d+)/delete_post/(\d+)/parentpost/(\d+)/$', views.delete_post),
     url(r'^course/(\d+)/delete_post/(\d+)/$', views.delete_bigpost),
