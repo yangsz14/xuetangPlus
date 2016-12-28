@@ -204,7 +204,7 @@
   "pk":42,
 "fields": {
     "P_Type":3,
-"P_Title":null,
+"P_Title":"null",
 "P_Content":"回复",
 "P_Time":"2016-12-17 15:41:06",
 "P_LastComTime":"2016-12-17 15:41:06",
@@ -434,7 +434,7 @@
 "P_Top":0,
 "P_Course_id":6,
 "P_Parent_id":null,
-"P_User_id":2,
+"P_User_id":1,
 "P_Wanted":20,
 "P_BestChild_id":null,
 "P_Level":0
