@@ -1,8 +1,11 @@
 {% extends "base.html" %}
+{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/index.css" /> {% endblock %}
 
+{% block sub-title %}
+<h2>学堂讨论区</h2>
+{% endblock %}
 {% block title %}学堂Plus{% endblock %}
 {% block content %}
-<h1>学堂讨论区</h1>
     <h2>
         <p>在这里有来自全校不同专业不同年级的同学</p>
         <p>欢迎在这里畅所欲言</p>
