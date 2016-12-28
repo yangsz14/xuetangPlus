@@ -22,6 +22,7 @@ from django.core.urlresolvers import reverse
 from .forms import *
 #import requests
 import random
+import requests
 
 # Create your views here.
 
@@ -141,7 +142,7 @@ def bbs_list(request):
     return render(request, 'index.html',{'posts':posts,'courses':courses})
 
 def update_course_info(studentid):
-    response = requests.post('http://se.zhuangty.com:8000/curriculum/'+studentid, data={"apikey": "API Key", "apisecret": "API Secret Key"})
+    response = requests.post('http://se.zhuangty.com:8000/curriculum/'+studentid, json={"apikey": "API Key", "apisecret": "API Secret Key"})
     if response.json()['message'] == 'Success':
         classes = response.json()['classes']
         for eachClass in classes:
@@ -165,15 +166,13 @@ def update_course_info(studentid):
 
 
 def validate_user(request,studentid,password):
-    data = json.dumps({"apikey": "API Key", "apisecret": "API Secret Key", "username": studentid, "password": password})
-    response = requests.post('http://se.zhuangty.com:8000/users/register', data)
+    response = requests.post('http://se.zhuangty.com:8000/users/register', json={"apikey": "API Key", "apisecret": "API Secret Key", "username": studentid, "password": password})
     if response.json()['message'] == 'Success':
         users = BBSUser.objects.filter(U_studentid=studentid)
         if len(users) == 0:
             newUserSys = User.objects.create_user(username=studentid, password=password)
             newUserSys.save()
             newUserSys = auth.authenticate(username=studentid, password=password)
-            auth.login(request, newUserSys)
             newUser = BBSUser()
             newUser.U_studentid = studentid
             newUser.U_password = password
@@ -235,7 +234,7 @@ def login(request):
             auth.login(request, user)
             return HttpResponseRedirect('/')
         else:
-            user = validate_user_bymyself(request,studentid=studentidin, password=passwordin)
+            user = validate_user(request,studentid=studentidin, password=passwordin)
             if user is not None:
                 return HttpResponseRedirect('/')
             else:
