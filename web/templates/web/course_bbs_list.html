@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
-{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/button.css" /> {% endblock %}
+{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/button.css" /> 
+<link rel="stylesheet" href="{{BASE_DIR}}/static/list.css" />{% endblock %}
 
 {% block sub-title %}
 <h2>{{ course.C_Name }}课程讨论区</h2>
@@ -17,21 +18,17 @@
             <span><a id="drawgood" href="/course/{{ course.id }}/drawing/2/">强力抽卡</a></span>
         </h1>
     {% endif %}
-<ul>
 
+<li class="list">
+<h3>帖子列表</h3>
+<ol>
 {% for post in posts %}
-    <div class="container">
-    <div class="row">
-        <div class="col-xs-4 item">
-            <div>
-            <img class="image" src="{{BASE_DIR}}/media/{{post.P_User.U_Image}}"/>
-            </div>
-            <div class="info">昵称：{{ post.P_User.U_name}}</div>
-            <div class="info">称号：{{ post.P_User.U_Honor}}</div>
-        </div>
-        <div class="col-xs-8 item">
+    <li>
+        <div class="icon" title="No unread posts"><div></div></div>
+        <div class="dis">
+            <div class="inner">
+            <a href="/course/{{ course.id }}/post/{{ post.id }}">{{ post.P_Title }}</a>
             <div class="name">
-                {{ post.P_Title }}
                 {% if post.P_Type == 2%}
                     {% if post.P_Level == 2%}
                         (UR笔记)
@@ -44,7 +41,10 @@
                     {% endif %}
                 {% endif %}
             </div>
-            <div class="content" id="content_{{ post.id }}">{{ post.P_Content}}</div>
+            
+        </div>
+        </div>
+        <div class="stat">
             {% if post.P_Type == 0 %}
                 <div class="cat info">类别：普通贴</div>
             {% elif post.P_Type == 1%}
@@ -56,21 +56,23 @@
                 <div class="cat info">悬赏：{{ post.P_Wanted }}</div>
             {% endif %}
             <div class="good info">点赞数：{{ post.P_LikeNum}}</div>
-            <div class="pull-right">
-            <a href="/course/{{ course.id }}/post/{{ post.id }}">详情</a>
-                {% if post.P_User == user%}
-                <button id="{{ post.id }}" class="save-btn-default btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" onclick="javascript:deletepost(this)">删除</button>
-                {% endif %}
-            </div>
         </div>
-    </div>
-     </div>
+        <div class="info1">
+            <span><img class="image" src="{{BASE_DIR}}/media/{{post.P_User.U_Image}}" width="30" height="30" /></span>
+            <span>
+            <div class="info">昵称：{{ post.P_User.U_name}}</div>
+            <div class="info">称号：{{ post.P_User.U_Honor}}</div>
+            </span>
+        </div>
+        {% if post.P_User == user%}
+            <button id="{{ post.id }}" class="button2" data-toggle="modal" data-target="#myModal" onclick="javascript:deletepost(this)">删除</button>
+        {% endif %}
+    </li>
 {% empty %}
     <li>抱歉，目前还没有帖子。</li>
 {% endfor %}
-
-
-</ul>
+    </ol>
+    </li>
 
     <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog"

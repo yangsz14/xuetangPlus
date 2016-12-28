@@ -6,17 +6,21 @@
 
 {% endblock %}
 
+{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/postpost.css" />
+<link rel="stylesheet" href="{{BASE_DIR}}/static/postpostplus.css" />
+<link rel="stylesheet" href="{{BASE_DIR}}/static/detail.css" /> {% endblock %}
+{% block sub-title %}
+<h2>{{ user.U_name }}帖子详情</h2>
+{% endblock %}
+
 {% block content %}
-
-    <h1>{{ user.U_name }}帖子详情</h1>
-
-    <div class="form_row">
-        <label><a href="/{{ source }}/">返回</a></label>
+    <div class="button1 return">
+        <a href="/course/{{ course.id }}/">返回</a>
     </div>
 
     <div class="container">
-    <div class="row">
-        <div class="col-xs-4 item">
+    <div class="post">
+        <div class="profile">
             <div>
             <a href="/me/{{ bigpost.P_User.user.username }}">
             <img class="image" src="{{BASE_DIR}}/media/{{bigpost.P_User.U_Image}}"/>
@@ -25,9 +29,12 @@
             <div class="info">昵称：{{ bigpost.P_User.U_name}}</div>
             <div class="info">称号：{{ bigpost.P_User.U_Honor}}</div>
         </div>
-        <div class="col-xs-8 item">
+        <li class="postcon">
+        <div class="inner">
             <div class="name">{{ bigpost.P_Title }}</div>
             <div class="content" id="content_{{ bigpost.id }}">{{ bigpost.P_Content}}</div>
+            </div>
+        <div class="cate">
             {% if bigpost.P_Type == 0 %}
                 <div class="cat info">类别：普通贴</div>
             {% elif bigpost.P_Type == 1%}
@@ -43,14 +50,13 @@
             <input id="{{ bigpost.id }}" type="button" class="btn btn-default likeBtn blue mybutton" value="点赞" onclick="javascript:likebtn(this)">
             {% endif %}
             </div>
-        </div>
+       </div>
+        </li>
     </div>
-     </div>
 
 {% for post in childrenposts %}
-<div class="container child">
-    <div class="row">
-        <div class="col-xs-4 item">
+    <div class="post">
+        <div class="profile">
             <div>
             <a href="/me/{{ post.P_User.user.username }}">
             <img class="image" src="{{BASE_DIR}}/media/{{post.P_User.U_Image}}"/>
@@ -59,9 +65,12 @@
             <div class="info">昵称：{{ post.P_User.U_name}}</div>
             <div class="info">称号：{{ post.P_User.U_Honor}}</div>
         </div>
-        <div class="col-xs-8 item">
+        <li class="postcon">
+        <div class="inner">
             <div class="name">{{ post.P_Title }}</div>
             <div class="content" id="content_{{ post.id }}">{{ post.P_Content}}</div>
+        </div>
+        <div class="cate">
             {% if post.P_Type == 0 %}
                 <div class="cat info">类别：普通贴</div>
             {% elif post.P_Type == 1%}
@@ -73,36 +82,36 @@
             <div class="pull-right">
             </div>
             {% if post.P_User == user%}
-            <button id="{{ post.id }}" class="save-btn-default btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" onclick="javascript:deletepost(this)">删除</button>
+            <button id="{{ post.id }}" class="button2" data-toggle="modal" data-target="#myModal" onclick="javascript:deletepost(this)">删除</button>
             {% endif %}
         </div>
-    </div>
-    </div>
+       </div>
+        </li>
 
 {% empty %}
 
 {% endfor %}
 
+    </div>
+
 {% if user.user.is_authenticated and not user.UForbidden%}
-        <div style="text-align:left;font-size:20px;font-family:STKaiti;padding-top:15%" id="form_div_of_register">
+<div id="form_div_of_register">
 
 <div class="reply">
-	<hr>
-    <label class="btn btn-default mybutton blue" for="fileImage">上传图片</label>
-	<input id="fileImage" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
-	<form method="POST" class="post-form" action=".">
-		{% csrf_token %}
-		<p>
-            <label for="id_PContent">内容：</label>
-        </p>
-        <p>
-            <textarea cols="90%" id="id_PContent" name="P_Content" rows="10"></textarea>
-        </p>
-        <button id="happyBtn0" type="submit" class="save btn btn-default blue mybutton">回复</button>
-	</form>
+    <hr>
+    <form method="POST" class="post-form" action=".">
+        {% csrf_token %}
+            <div class="messagebox">
+                <textarea class="input" id="id_PContent" type="text" placeholder="Content" name="P_Content" value="{{ P_Content }}"></textarea>
+            </div>
+            <button id="happyBtn0" class="button1" type="submit" class="save btn btn-default blue mybutton">回复</button>
+            <label class="button2" for="fileImage">上传图片</label>
+            <input id="fileImage" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
+            <button class="button2"><a href="/course/{{ course.id }}/">返回</a></button>
+    </form>
 </div>
 
-        </div>
+    </div>
 {% endif %}
     <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
