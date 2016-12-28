@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/postpost.css" /> {% endblock %}
+
+{% block sub-title %}
+<h2>添加帖子</h2>
+{% endblock %}
+
+
+{% block title %}学堂Plus{% endblock %}
+{% block content %}
+
+    <div class="form">
+    <div class="outbox">
+        {% if error %}
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <strong>Error!</strong> {{ error }}
+            </div>
+        {% endif %}
+        <form class="form-base" action="/postxpostdetail/{{ source }}/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="messagebox">
+                <input type="text" placeholder="Title" name="P_Title" value="{{ P_Title }}">
+
+                <textarea class="input" placeholder="123" name="P_Content" value="{{ P_Content }}">
+                </textarea>
+
+            <div class="form_row">
+                <label for="id_type">分区:{{ source }}</label>
+            </div>
+
+            </div>
+            <input type="submit" class="button1" value="确认">
+        </form>
+        <div class="form_row">
+            <label><a href="/">返回</a></label>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}

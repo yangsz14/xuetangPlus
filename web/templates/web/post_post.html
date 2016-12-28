@@ -1,37 +1,39 @@
 {% extends "base.html" %}
 
+{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/postpost.css" />
+<link rel="stylesheet" href="{{BASE_DIR}}/static/postpostplus.css" /> {% endblock %}
+
+{% block sub-title %}
+<h2>添加帖子</h2>
+{% endblock %}
+
+
 {% block title %}学堂Plus{% endblock %}
 {% block content %}
 
     <div class="form">
-    <div class="register panel panel-default ">
-        <h2>添加帖子</h2>
+    <div class="outbox ">
         {% if error %}
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <strong>Error!</strong> {{ error }}
+            <div class="mention" role="alert">
+                    <p>{{ error }}</p>
             </div>
         {% endif %}
         <form class="form-base" id="newform" action="/post/{{ course.id }}/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <div class="form_row">
-                <label for="id_title">题目:</label>
-                <input id="id_title" type="text" class="form-control" placeholder="Title" name="P_Title" value="">
+            <div class="messagebox">
+                <input type="text" id="id_title" placeholder="Title" name="P_Title" value="{{ P_Title }}">
+
+                <textarea class="input" id="id_content" type="text" placeholder="Content" name="P_Content" value="{{ P_Content }}"></textarea>
+
             </div>
 
-            <div class="form_row">
-                <label for="id_content">内容:</label>
-                <input id="id_content" type="text" class="form-control" placeholder="Content" name="P_Content" value="">
-            </div>
-
-            <input id="happyBtn0" class="btn btn-success form_button" value="作为普通贴发帖" onclick="javascript:normalpost(this)">
-            <input id="happyBtn1" class="btn btn-success form_button" value="作为提问贴发帖" data-toggle="modal" data-target="#myModal">
+            <input id="happyBtn0" class="button1" value="作为普通贴发帖" onclick="javascript:normalpost(this)">
+            <input id="happyBtn1" class="button1" value="作为提问贴发帖" data-toggle="modal" data-target="#myModal">
+            <label class="button2" for="fileImage">上传图片</label>
+            <input id="fileImage" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
+            <button class="button2"><a href="/course/{{ course.id }}/">返回</a></button>
         </form>
-        <div class="form_row">
-            <label><a href="/course/{{ course.id }}/">返回</a></label>
-        </div>
     </div>
     </div>
 
@@ -108,7 +110,28 @@
         window.location.href="/course/"+coustr+"/"
     }
 
-
+    $(function () {
+        $('#fileImage').bind("change", function() {
+            if ($(this).prop('files')[0].type.indexOf("image") <= -1) {
+                alert("请选择图片！");
+                return;
+            }
+            var formdata = new FormData()
+            formdata.append("file",$(this).prop('files')[0])
+            console.log($(this).prop('files')[0]);
+            $.ajax({
+                url: "/ajax_append_image/",
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success: function(data, textStatus) {
+                    $("#id_content").val($("#id_content").val() + "__url_start__" + data + "__url_end__")
+                    alert("上传成功")
+                }
+            });
+        })
+    });
     </script>
 
 {% endblock %}

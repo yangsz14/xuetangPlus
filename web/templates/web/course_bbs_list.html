@@ -1,16 +1,20 @@
 {% extends "base.html" %}
 
-{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/style.css" /> {% endblock %}
+{%block css%} <link rel="stylesheet" href="{{BASE_DIR}}/static/button.css" /> {% endblock %}
+
+{% block sub-title %}
+<h2>{{ course.C_Name }}课程讨论区</h2>
+<a class="fatie" href="/post/{{ course.id }}">发帖</a>
+{% endblock %}
 
 {% block title %}学堂Plus{% endblock %}
 {% block content %}
 
-    <h1>{{ course.C_Name }}课程讨论区</h1>
     {% if hasnotes == 1 %}
         <h1>
-            <span><a href="/course/{{ course.id }}/drawing/0/">抽一发</a></span>
-            <span><a href="/course/{{ course.id }}/drawing/1/">抽十发</a></span>
-            <span><a href="/course/{{ course.id }}/drawing/2/">强力抽卡</a></span>
+            <span><a id="draw1" href="/course/{{ course.id }}/drawing/0/">抽一发</a></span>
+            <span><a id="draw10" href="/course/{{ course.id }}/drawing/1/">抽十发</a></span>
+            <span><a id="drawgood" href="/course/{{ course.id }}/drawing/2/">强力抽卡</a></span>
         </h1>
     {% endif %}
 <ul>
@@ -40,7 +44,7 @@
                     {% endif %}
                 {% endif %}
             </div>
-            <div class="content">{{ post.P_Content}}</div>
+            <div class="content" id="content_{{ post.id }}">{{ post.P_Content}}</div>
             {% if post.P_Type == 0 %}
                 <div class="cat info">类别：普通贴</div>
             {% elif post.P_Type == 1%}
@@ -53,7 +57,7 @@
             {% endif %}
             <div class="good info">点赞数：{{ post.P_LikeNum}}</div>
             <div class="pull-right">
-            <button class="btn blue"><a href="/course/{{ course.id }}/post/{{ post.id }}">详情</a></button>
+            <a href="/course/{{ course.id }}/post/{{ post.id }}">详情</a>
                 {% if post.P_User == user%}
                 <button id="{{ post.id }}" class="save-btn-default btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" onclick="javascript:deletepost(this)">删除</button>
                 {% endif %}
@@ -67,8 +71,6 @@
 
 
 </ul>
-<a class="fatie" href="/post/{{ course.id }}"><img src="{{BASE_DIR}}/static/123.png" width="100px" height="100px"></a>
-
 
     <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -109,5 +111,17 @@
         restr = "/course/"+cid+"/delete_post/"+idstr+"/"
         deletedom.setAttribute("href",restr)
     }
+
+    $(function () {
+        {% for post in posts  %}
+            var s = '{{ post.P_Content|safe }}'
+            p = s.match(/__url_start__(\S*?)__url_end__/)
+            while (!(p === null)) {
+                s = s.replace(p[0], "<img src='{{BASE_DIR}}/media/" + p[1] + "' />")
+                p = s.match(/__url_start__(\S*?)__url_end__/)
+            }
+        $('#content_{{ post.id }}').html(s)
+        {% endfor %}
+    });
     </script>
 {% endblock %}

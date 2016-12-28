@@ -66,9 +66,46 @@
     transition: background-color .18s cubic-bezier(0.6,0,.1,1),box-shadow .18s cubic-bezier(0.6,0,.1,1);
     user-select: none;
     border-width: 0px;
+    margin-top: 18px;
     margin-left: 12%;
 }
 
 .button1:hover{
     box-shadow: 0 2px 5px rgba(0,0,0,0.42);
+}
+
+.button2{
+    background-color: transparent;
+    color: #5A5A5A;
+    border-radius: 2px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.3em;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 9px;
+    border: none;
+    transition: background-color .18s cubic-bezier(0.6,0,.1,1),box-shadow .18s cubic-bezier(0.6,0,.1,1);
+}
+
+a{
+    color: #5A5A5A;
+}
+
+a:hover,a:focus{
+    color: #5A5A5A;
+    text-decoration: none;
+}
+
+.button2:hover{
+    box-shadow: 0 2px 5px rgba(0,0,0,0.42);
+}
+
+p{
+    margin-left: 10%;
+    font-size: 1.5em;
+    margin-bottom: 18px;
+    color: #f44336;
+    font-weight: 600;
+    line-height: 1.7;
 }
