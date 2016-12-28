@@ -23,7 +23,7 @@
 
             <div class="form_row">
                 <label for="id_content">内容:</label>
-                <input type="text" class="form-control" placeholder="Content" name="P_Content" value="{{ P_Content }}">
+                <input id="id_PContent" type="text" class="form-control" placeholder="Content" name="P_Content" value="{{ P_Content }}"
             </div>
 
             <div class="form_row">
@@ -33,10 +33,36 @@
 
             <input type="submit" class="btn btn-success form_button" value="确认">
         </form>
+        <label class="btn btn-default mybutton blue" for="fileImage">上传图片</label>
+        <input id="fileImage" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
         <div class="form_row">
             <label><a href="/">返回</a></label>
         </div>
     </div>
     </div>
 
+    <script type="text/javascript">
+    $(function () {
+        $('#fileImage').bind("change", function() {
+            if ($(this).prop('files')[0].type.indexOf("image") <= -1) {
+                alert("请选择图片！");
+                return;
+            }
+            var formdata = new FormData()
+            formdata.append("file",$(this).prop('files')[0])
+            console.log($(this).prop('files')[0]);
+            $.ajax({
+                url: "/ajax_append_image/",
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success: function(data, textStatus) {
+                    $("#id_PContent").val($("#id_PContent").val() + "__url_start__" + data + "__url_end__")
+                    alert("上传成功")
+                }
+            });
+        })
+    });
+    </script>
 {% endblock %}
