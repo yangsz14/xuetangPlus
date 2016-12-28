@@ -9,8 +9,9 @@
 
     <script src="http://apps.bdimg.com/libs/jquery/2.0.0/jquery.min.js"></script>
     <script src="http://apps.bdimg.com/libs/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="{{BASE_DIR}}/static/style.css" />
+    <link rel="stylesheet" href="{{BASE_DIR}}/static/main.css" />
     <link rel="stylesheet" href="{{BASE_DIR}}/static/drawing.css" />
+    {%block css%} {% endblock %}
     <title>{% block title %}User test{% endblock %}</title>
 </head>
 
@@ -67,7 +68,9 @@
     </nav>
     {% endblock %}
     </div>
-
+    <div class="sub-header">
+    {% block sub-title %}{% endblock %}
+    </div>
     <div id="content">
     {% block content %}{% endblock %}
     </div>
