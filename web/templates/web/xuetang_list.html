@@ -28,7 +28,7 @@
             {% endif %}
             <div class="good info">点赞数：{{ post.P_LikeNum}}</div>
             <div class="pull-right">
-            <button class="btn blue"><a href="/xpostdetail/{{ post.id }}/{{ source }}/">详情</a></button>
+            <a href="/xpostdetail/{{ post.id }}/{{ source }}/">详情</a>
                 {% if post.P_User == user%}
                 <button id="{{ post.id }}" class="save-btn-default btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" onclick="javascript:deletepost(this)">删除</button>
                 {% endif %}
