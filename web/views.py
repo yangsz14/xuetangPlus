@@ -516,11 +516,11 @@ def post_xuetang_post_detail(request,source):
         title = request.POST['P_Title'] if request.POST['P_Title'] else ""
         content = request.POST['P_Content'] if request.POST['P_Content'] else ""
         if not title:
-            return render(request,'web/post_xuetang_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content, 'courses':courses})
+            return render(request,'web/post_xuetang_post.html',{'error':'请输入帖子题目','P_Title':title,'P_Content':content, 'courses':courses,'source':source})
         if not content:
-            return render(request,'web/post_xuetang_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content, 'courses':courses})
+            return render(request,'web/post_xuetang_post.html',{'error':'请输入帖子详情','P_Title':title,'P_Content':content, 'courses':courses,'source':source})
         if not type:
-            return render(request,'web/post_xuetang_post.html',{'error':'请选择帖子类别','P_Title': title,'P_Content': content, 'courses':courses})
+            return render(request,'web/post_xuetang_post.html',{'error':'请选择帖子类别','P_Title': title,'P_Content': content, 'courses':courses,'source':source})
 
         userme = BBSUser.objects.get(user=request.user)
 
