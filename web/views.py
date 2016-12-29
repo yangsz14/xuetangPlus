@@ -376,8 +376,10 @@ def course_post_detail(request,courseid,postid):
             childrenposts.append(child)
         else :
             bestchild = child
+    childrenposts.reverse()
     if bestchild != None:
         childrenposts.append(bestchild)
+    childrenposts.reverse()
     #childrenposts.reverse()
 
     likefilter = UserLikePost.objects.filter(UserID=myuser, PostID=bigpost)
@@ -743,7 +745,7 @@ def draw_good(course):
     allnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'])
     urnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['UR'])
     srnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['SR'])
-    if len(urnotes) == 0 or len(srnotes) == 0:
+    if len(urnotes) == 0 and len(srnotes) == 0:
         return None
     getnote = None
     if noterand >= 1 and noterand <= prop_dic['UR']:
@@ -758,6 +760,7 @@ def draw_good(course):
         else:
             siterand = random.randint(0, len(srnotes) - 1)
             getnote = srnotes[siterand]
+    print("getnote",getnote)
     return getnote
 
 def draw_10(course):

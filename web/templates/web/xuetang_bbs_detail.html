@@ -15,7 +15,7 @@
 
 {% block content %}
     <div class="button1 return">
-        <a href="/course/{{ course.id }}/">返回</a>
+        <a href="/{{ source }}/">返回</a>
     </div>
 
     <div class="container">
@@ -107,7 +107,7 @@
             <button id="happyBtn0" class="button1" type="submit" class="save btn btn-default blue mybutton">回复</button>
             <label class="button2" for="fileImage">上传图片</label>
             <input id="fileImage" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
-            <button class="button2"><a href="/course/{{ course.id }}/">返回</a></button>
+            <button class="button2"><a href="/{{ source }}/">返回</a></button>
     </form>
 </div>
 

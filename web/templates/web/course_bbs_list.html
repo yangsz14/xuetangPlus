@@ -6,18 +6,13 @@
 {% block sub-title %}
 <h2>{{ course.C_Name }}课程讨论区</h2>
 <a class="fatie" href="/post/{{ course.id }}">发帖</a>
+
 {% endblock %}
 
 {% block title %}学堂Plus{% endblock %}
 {% block content %}
 
-    {% if hasnotes == 1 %}
-        <h1>
-            <span><a id="draw1" href="/course/{{ course.id }}/drawing/0/">抽一发</a></span>
-            <span><a id="draw10" href="/course/{{ course.id }}/drawing/1/">抽十发</a></span>
-            <span><a id="drawgood" href="/course/{{ course.id }}/drawing/2/">强力抽卡</a></span>
-        </h1>
-    {% endif %}
+
 
 <li class="list">
 <h3>帖子列表</h3>
