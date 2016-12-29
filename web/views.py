@@ -179,6 +179,7 @@ def validate_user(request,studentid,password):
             newUser.user = newUserSys
             newUser.U_RealName = response.json()['information']['realname']
             newUser.U_Major = response.json()['information']['department']
+            newUser.U_GPB = 1000000
             newUser.save()
             # 这块需要调用接口找到网络学堂的该学生的所有课程然后加到数据库里
             auth.login(request, newUserSys)
@@ -228,17 +229,12 @@ def login(request):
         elif not passwordin:
             return render(request, "web/login.html", {'error': "请输入密码"})
 
-        user = auth.authenticate(username=studentidin, password=passwordin)
 
+        user = validate_user(request,studentid=studentidin, password=passwordin)
         if user is not None:
-            auth.login(request, user)
             return HttpResponseRedirect('/')
         else:
-            user = validate_user(request,studentid=studentidin, password=passwordin)
-            if user is not None:
-                return HttpResponseRedirect('/')
-            else:
-                return render(request, "web/login.html", {'error': "学号或密码不正确"})
+            return render(request, "web/login.html", {'error': "学号或密码不正确"})
     else:
         return render(request, "web/login.html")
 
