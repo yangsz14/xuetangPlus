@@ -1,35 +1,50 @@
 {% extends "base.html" %}
 
+{%block css%}
+<link rel="stylesheet" href="{{BASE_DIR}}/static/user.css" />{% endblock %}
+{% block sub-title %}
+<h2>{{ user.U_RealName }}您的信息</h2>
+{% endblock %}
+
+
 {% block title %}学堂Plus{% endblock %}
 {% block content %}
 
-    <h1>{{ user.U_RealName }}您的信息</h1>
-    <li>
-        <div>头像：<img src="{{ BASE_DIR }}/media/{{ user.U_Image }}"/></div>
+    <li class="sss">
+      <div class="info">
+        <div>
+        <img src="{{ BASE_DIR }}/media/{{ user.U_Image }}" width="200px" height="200px" />
+        </div>
         {% if request.user == user.user %}
-            <label for="changeImage">上传头像</label>
+            <label class="button2" for="changeImage">上传头像</label>
             <input id="changeImage" name="U_Image" type="file" style="position:absolute;clip:rect(0 0 0 0);"/>
         {% endif %}
         {% if request.user == user.user %}
-        <div>
+        <div class="na">
             昵称
             <input id="changeNick" type="text" value="{{ user.U_name }}"/>
-            <input id="saveNick" type="button" value="修改昵称"/>
+            <input class="button2"id="saveNick" type="button" value="修改昵称"/>
         </div>
         {% else %}
             <div>昵称：{{ user.U_name }}</div>
         {% endif %}
-        <div>真名：{{ user.U_RealName }}</div>
-        <div>院系：{{ user.U_Major }}</div>
-        <div>等级：{{ user.U_Level}}</div>
-        <div>称号：{{ user.U_Honor}}</div>
-        <div>GP币：{{ user.U_GPB }}</div>
-        <div>签名：{{ user.U_Description }}</div>
-        <a id="helikes" href="/helikes/{{user.id}}/">我的点赞</a>
-        <a id="heasks" href="/heasks/{{user.id}}/">我的提问</a>
-        <a id="heanswers" href="/heanswers/{{user.id}}/">我的回答</a>
-    </li>
 
+      </div>
+      <div class="xinxi">
+        <div class="xinxizixiang">真名：{{ user.U_RealName }}</div>
+        <div class="xinxizixiang">院系：{{ user.U_Major }}</div>
+        <div class="xinxizixiang">等级：{{ user.U_Level}}</div>
+        <div class="xinxizixiang">称号：{{ user.U_Honor}}</div>
+        <div class="xinxizixiang">GP币：{{ user.U_GPB }}</div>
+        <div class="xinxizixiang">签名：{{ user.U_Description }}</div>
+      </div>
+
+    </li>
+        
+        <a class="button1 as" id="helikes" href="/helikes/{{user.id}}/">我的点赞</a>
+        <a class="button1 as" id="heasks" href="/heasks/{{user.id}}/">我的提问</a>
+        <a class="button1 as" id="heanswers" href="/heanswers/{{user.id}}/">我的回答</a>
+        <button class="button2 as">我的关注：{{ user.U_FollowUserNum }}</button>
     <script type="text/javascript">
     function getCookie(name) {
     var cookieValue = null;

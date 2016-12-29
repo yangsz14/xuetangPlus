@@ -1,0 +1,130 @@
+.button1 {
+    height: 40px;
+    background-color: #1976D2;
+    color: #FAFAFA;
+    border-radius: 2px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Open Sans";
+    font-size: 1.3em;
+    padding: 9px 18px;
+    transition: background-color .18s cubic-bezier(0.6,0,.1,1),box-shadow .18s cubic-bezier(0.6,0,.1,1);
+    user-select: none;
+    border-width: 0px;
+    margin-top: 18px;
+    margin-left: 12%;
+}
+
+.button1:hover{
+    box-shadow: 0 2px 5px rgba(0,0,0,0.42);
+}
+
+.button2{
+    background-color: transparent;
+    color: #5A5A5A;
+    border-radius: 2px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.3em;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 9px;
+    border: none;
+    transition: background-color .18s cubic-bezier(0.6,0,.1,1),box-shadow .18s cubic-bezier(0.6,0,.1,1);
+}
+
+a{
+    color: #5A5A5A;
+}
+
+a:hover,a:focus{
+    color: #5A5A5A;
+    text-decoration: none;
+}
+
+.button2:hover{
+    box-shadow: 0 2px 5px rgba(0,0,0,0.42);
+}
+
+.info {
+    width: 250px;
+    margin-right: 0px;
+    float: left;
+}
+
+.xinxi{
+    width: 80%;
+    float: left;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.42);
+    background-color: #ffffff;
+}
+
+img{
+    margin-left: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.42);
+
+}
+
+.button2{
+    margin-top:20px;
+    margin-left:80px;
+}
+
+input {
+    font-size: 1.3em;
+    margin-left:0px;
+    margin-right:0px;
+    margin-bottom: 6px;
+    border-style: solid;
+    border-width: 0 0 1px;
+    background-color: transparent;
+    border-color: rgb(208, 208, 208);
+    color: #5A5A5A;
+    transition: border-color .18s cubic-bezier(0.6,0,.1,1),box-shadow .18s cubic-bezier(0.6,0,.1,1);
+    border-radius: 0;
+    font-family: "Open Sans";
+    -webkit-appearance: none;
+}
+
+input:hover
+{
+    border-color: #1976D2;
+}
+
+input:focus
+{
+    border-color: rgb(18, 87, 155);
+    outline: none;
+}
+
+.na{
+    margin-left: 30px;
+}
+
+.na .button2{
+    margin-left: 50px;
+}
+
+.sss{
+    margin-top: 20px;
+}
+
+.xinxizixiang{
+    border-style: solid;
+    border-width: 0 0 1px;
+    border-color: rgb(208, 208, 208);
+    width: 80%;
+    margin-left: 10%;
+    font-size: 2em;
+    margin-top: 10px;
+}
+
+.guanzhu{
+    border-style: solid;
+    border-width: 0 0 1px;
+    border-color: rgb(208, 208, 208);
+}
+
+.button1.as{
+    margin-left: 20px;
+}
