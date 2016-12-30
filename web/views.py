@@ -128,7 +128,6 @@ def get_courses(user):
     return courses
 
 def bbs_list(request):
-    print("SHIT4")
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     bestposts = BBSPost.objects.filter(P_Parent=None,P_Type=type_dic['大讨论区'])
@@ -137,7 +136,6 @@ def bbs_list(request):
     bestposts = sorted(bestposts,key=lambda x:x.P_LikeNum,reverse=True)
 
     posts = bestposts
-    print("userme",request.user)
     courses = get_courses(request.user)
     return render(request, 'index.html',{'posts':posts,'courses':courses})
 
@@ -238,60 +236,6 @@ def login(request):
     else:
         return render(request, "web/login.html")
 
-# class CoursePostListView(ListView):
-#
-#     model = BBSPost
-#     template_name = 'web/course_bbs_list.html'
-#     pk_courseid_kwarg = 'courseid'
-#
-#     def get_context_data(self,**kwargs):
-#
-#         context = super(CoursePostListView,self).get_context_data(**kwargs)
-#         courseid = int(self.kwargs.get(self.pk_courseid_kwarg, None))
-#         #print('mycourseid:', courseid)
-#         mycourse = BBSCourse.objects.get(id=courseid)
-#         #print('mycourse:', mycourse)
-#         #print('myuser:', self.request.user)
-#         hasnotes = 0
-#
-#         if not self.request.user.is_authenticated():
-#             return HttpResponseRedirect('/login/')
-#         courses = get_courses(self.request.user)
-#         if mycourse not in courses:
-#             print("SHIT3")
-#             return HttpResponseRedirect('/')
-#
-#         #print('myuser:',self.request.user)
-#         myuser = BBSUser.objects.get(user=self.request.user)
-#         #print('myuser:', myuser)
-#
-#         posts = BBSPost.objects.filter(P_Course=mycourse,P_Parent=None)
-#
-#         allnotes = BBSPost.objects.filter(P_Course=mycourse, P_Type=type_dic['笔记贴'])
-#         if len(allnotes) != 0:
-#             hasnotes = 1
-#         mynotesrelas = UserHasNode.objects.filter(UserID=myuser)
-#         mynotes = []
-#         posts = list(posts)
-#
-#         for mynotesrela in mynotesrelas:
-#             mynotes.append(mynotesrela.PostID)
-#         newposts = []
-#         for post in posts:
-#             if post.P_Type == type_dic['笔记贴'] and (post not in mynotes):
-#                continue
-#             if post.P_Type == type_dic['大讨论区']:
-#                 continue
-#             newposts.append(post)
-#
-#         newposts.reverse()
-#         context['posts'] = newposts
-#         context['course'] = mycourse
-#         context['user'] = myuser
-#
-#         context['courses'] = courses
-#         context['hasnotes'] = hasnotes
-#         return context
 
 def course_post_list(request,courseid):
     context = {}
@@ -350,7 +294,6 @@ def course_post_detail(request,courseid,postid):
     form = ReplyForm(params,instance=None)
     if form.is_valid():
         reply_get = form.save(commit=False)
-        print(reply_get.P_Title)
         reply = BBSPost()
         reply.P_User = myuser
         reply.P_Title = '回复'
@@ -437,7 +380,6 @@ def post_course_post(request,courseid):
         return HttpResponseRedirect('/')
     myuser = BBSUser.objects.get(user=request.user)
     if request.method == 'POST':
-        print(request.POST)
         title = request.POST['P_Title'] if request.POST['P_Title'] else ""
         content = request.POST['P_Content'] if request.POST['P_Content'] else ""
         wantedvalue = request.POST['wantedval'] if request.POST['wantedval'] else 0
@@ -476,7 +418,6 @@ def xuetang_post_detail(request,postid,source):
     form = ReplyForm(params, instance=None)
     if form.is_valid():
         reply_get = form.save(commit=False)
-        print(reply_get.P_Title)
         reply = BBSPost()
         reply.P_User = myuser
         reply.P_Title = reply_get.P_Title
@@ -541,7 +482,6 @@ def xuetang_notice(request,source):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     myuser = BBSUser.objects.get(user=request.user)
-    print("KeyError",type_dic['大讨论区'],sec_dic[source])
     bestposts = BBSPost.objects.filter(P_Parent=None, P_Type=type_dic['大讨论区'],P_Section=sec_dic[source])
     bestposts = list(bestposts)
     bestposts = sorted(bestposts, key=lambda x: x.P_Time, reverse=True)
@@ -655,7 +595,6 @@ def good_post(request,courseid,bigpostid):
                 parent.P_BestChild.P_User.U_GPB -= parent.P_Wanted
                 parent.P_BestChild.P_User.save()
         parent.P_BestChild = goodpost
-        #print("good:",goodpost.P_Content)
         parent.save()
         goodpost.P_User.U_GPB += parent.P_Wanted
         raiseLevel(goodpost.P_User)
@@ -716,7 +655,6 @@ def draw_one(course):
             noterand = random.randint(prop_dic['UR'] + 1, 100)
         else:
             siterand = random.randint(0, len(urnotes) - 1)
-            print("UR", len(urnotes), siterand)
             getnote = urnotes[siterand]
     if noterand >= prop_dic['UR'] + 1 and noterand <= prop_dic['UR'] + prop_dic['SR']:
         srnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['SR'])
@@ -724,7 +662,6 @@ def draw_one(course):
             noterand = random.randint(prop_dic['UR'] + prop_dic['SR'] + 1, 100)
         else:
             siterand = random.randint(0, len(srnotes) - 1)
-            print("SR", len(srnotes), siterand)
             getnote = srnotes[siterand]
     if noterand >= prop_dic['UR'] + prop_dic['SR'] + 1:
         rnotes = BBSPost.objects.filter(P_Course=course, P_Type=type_dic['笔记贴'], P_Level=level_dic['R'])
@@ -732,7 +669,6 @@ def draw_one(course):
             getnote = allnotes[0]
         else:
             siterand = random.randint(0, len(rnotes) - 1)
-            print("R", len(rnotes), siterand)
             getnote = rnotes[siterand]
     return getnote
 
@@ -756,7 +692,6 @@ def draw_good(course):
         else:
             siterand = random.randint(0, len(srnotes) - 1)
             getnote = srnotes[siterand]
-    print("getnote",getnote)
     return getnote
 
 def draw_10(course):

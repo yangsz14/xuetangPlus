@@ -1312,4 +1312,6 @@ class GoodPostTest(LiveServerTestCase):
         print("self.browser",self.browser)
     
         self.assertIn('采纳', self.browser.find_element_by_id('content').text)
-    
+
+
+
